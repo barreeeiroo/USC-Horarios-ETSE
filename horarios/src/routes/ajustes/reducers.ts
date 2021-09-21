@@ -7,7 +7,6 @@ import {
   SELECCIONAR_ASIGNATURA,
 } from "./types";
 import Asignatura from "models/asignatura";
-import {Reducer} from "redux";
 
 const initialState: AjustesState = {
   asignaturas: [],
