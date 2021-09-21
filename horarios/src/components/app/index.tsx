@@ -15,7 +15,7 @@ export class App extends React.Component<AppProps, AppState> {
             <Route path={AppRoutes.AJUSTES}>TBD...</Route>
             <Route path={AppRoutes.HORARIO}>TBD...</Route>
             <Route path={AppRoutes.ICALENDAR}>TBD...</Route>
-            <Route exact path={AppRoutes.INICIO}><Redirect to={AppRoutes.AJUSTES}/></Route>
+            <Route><Redirect to={AppRoutes.AJUSTES}/></Route>
           </Switch>
         </Router>
       </Provider>

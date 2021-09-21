@@ -1,7 +1,8 @@
 import {combineReducers, Reducer} from 'redux';
 import {ajustesReducer} from 'routes/ajustes/reducers';
+import {StoreState} from './types';
 
-export const rootReducer: Reducer = combineReducers({
+export const rootReducer: Reducer = combineReducers<StoreState>({
   ajustes: ajustesReducer
 });
 

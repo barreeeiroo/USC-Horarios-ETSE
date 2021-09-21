@@ -1,3 +1,5 @@
-import {AnyAction} from "redux";
+import {AjustesState} from "routes/ajustes/types";
 
-export type ActionHandler<TState, Action extends AnyAction> = (state: TState, action: Action) => TState;
+export type StoreState = {
+  ajustes: AjustesState
+};
