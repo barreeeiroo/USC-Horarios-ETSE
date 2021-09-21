@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'index.less';
+import 'root.less';
 import App from 'components/app';
 import {ConfigProvider} from "antd";
 import esES from 'antd/lib/locale/es_ES';
