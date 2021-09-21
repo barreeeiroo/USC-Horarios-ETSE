@@ -4,6 +4,8 @@ import {CONNECTOR, nuevaAsignatura} from "./actions";
 import {withRouter} from "react-router-dom";
 import {initialState, ajustesReducer} from "routes/ajustes/reducers";
 import {Col, Layout, Row} from "antd";
+import {request} from "utils/http";
+import {BD} from "config";
 
 
 class Ajustes extends React.Component<AjustesProps, AjustesState> {
@@ -12,35 +14,14 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
     this.state = initialState;
   }
 
-  private test() {
-    let state = this.state;
-    state = ajustesReducer(state, nuevaAsignatura({
-      codigo: "a",
-      nombre: "",
-      abreviatura: "",
-      clases: [],
-      periodo: "1SG"
-    }));
-    state = ajustesReducer(state, nuevaAsignatura({
-      codigo: "b",
-      nombre: "",
-      abreviatura: "",
-      clases: [],
-      periodo: "1SG"
-    }));
-    state = ajustesReducer(state, nuevaAsignatura({
-      codigo: "c",
-      nombre: "",
-      abreviatura: "",
-      clases: [],
-      periodo: "1SG"
-    }));
+  private descargarDatos() {
+    request(BD.FESTIVOS).then(json => {
 
-    this.setState(state, () => console.log(this.state));
+    });
   }
 
   componentDidMount() {
-    this.test();
+    this.descargarDatos();
   }
 
   render() {

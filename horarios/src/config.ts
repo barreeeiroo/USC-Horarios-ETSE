@@ -1,6 +1,6 @@
 export const SPREADSHEET_ID = "1ySowTcnclpi11A4Vu3QbTS4FpMwj-CI3qKSi9JR_4EI";
 
-export enum MAPPING {
+export enum BD {
   ASIGNATURAS = "ASIGNATURAS",
     ASIGNATURAS__CODIGO = "A",
     ASIGNATURAS__NOMBRE = "B",
@@ -33,5 +33,5 @@ export enum MAPPING {
     GRUPOS__GRUPO = "C",
     GRUPOS__ROTACION = "D",
     GRUPOS__INICIO = "E",
-    GRUPOS__FIN = "F"
+    GRUPOS__FIN = "F",
 }

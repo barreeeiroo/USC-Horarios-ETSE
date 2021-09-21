@@ -1,3 +1,5 @@
+import {BD} from "config";
+
 export const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] as const;
 export type DiasSemana = typeof diasSemana[number];
 
@@ -7,5 +9,5 @@ export type Periodos = typeof periodos[number];
 export const tiposClase = ["CLE", "CLIS", "CLIL"] as const;
 export type TiposClase = typeof tiposClase[number];
 
-export const hojas = ["ASIGNATURAS", "CLASES", "PERIODOS", "FESTIVOS", "GRUPOS"] as const;
+export const hojas = [BD.ASIGNATURAS, BD.CLASES, BD.PERIODOS, BD.FESTIVOS, BD.GRUPOS] as const;
 export type Hojas = typeof hojas[number];
