@@ -11,6 +11,8 @@ export interface AjustesProps extends PropsFromRedux, RouteComponentProps {
 export interface AjustesState {
   // Datos de la base de datos globales
   asignaturas: Asignatura[];
+  // Grupos que no están asignados a asignaturas (temporal, luego se reasignan a asignaturas)
+  grupos: Grupo[];
 
   // Materias seleccionadas
   matricula: Asignatura[];
@@ -20,6 +22,7 @@ export const NUEVA_ASIGNATURA = 'NUEVA_ASIGNATURA';
 export const CARGAR_ASIGNATURAS = 'CARGAR_ASIGNATURAS';
 export const NUEVA_CLASE = 'NUEVA_CLASE';
 export const NUEVO_GRUPO = 'NUEVO_GRUPO';
+export const REASIGNAR_GRUPOS = 'REASIGNAR_GRUPOS'
 
 interface InsertarNuevaAsignaturaAction {
   type: typeof NUEVA_ASIGNATURA;
@@ -41,9 +44,14 @@ interface InsertarNuevoGrupoAction {
   payload: { grupo: Grupo };
 }
 
+interface ReasignarGruposAction {
+  type: typeof REASIGNAR_GRUPOS;
+}
+
 
 export type AjustesActionTypes =
   InsertarNuevaAsignaturaAction |
   GuardarCargaAsignaturasAction |
   InsertarNuevaClaseAction      |
-  InsertarNuevoGrupoAction;
+  InsertarNuevoGrupoAction      |
+  ReasignarGruposAction;

@@ -5,6 +5,7 @@ import {
   NUEVA_ASIGNATURA,
   NUEVA_CLASE,
   NUEVO_GRUPO,
+  REASIGNAR_GRUPOS,
 } from "./types";
 import Asignatura from "models/asignatura";
 import {Grupo} from "models/grupo";
@@ -41,9 +42,16 @@ export function nuevoGrupo(grupo: Grupo): AjustesActionTypes {
   }
 }
 
+export function reasignarGrupos(): AjustesActionTypes {
+  return {
+    type: REASIGNAR_GRUPOS
+  }
+}
+
 
 const mapState = (state: RootState): AjustesState => ({
   asignaturas: state.ajustes.asignaturas,
+  grupos: state.ajustes.grupos,
   matricula: state.ajustes.matricula
 });
 
@@ -51,7 +59,8 @@ const mapDispatch = {
   nuevaAsignatura: nuevaAsignatura,
   cargarAsignaturas: cargarAsignaturas,
   nuevaClase: nuevaClase,
-  nuevoGrupo: nuevoGrupo
+  nuevoGrupo: nuevoGrupo,
+  reasignarGrupos: reasignarGrupos
 }
 
 export const CONNECTOR = connect(mapState, mapDispatch);

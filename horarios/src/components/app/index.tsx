@@ -18,14 +18,16 @@ export class App extends React.Component<AppProps, AppState> {
             <Navbar/>
             <Layout style={{minHeight: '100vh'}}>
               <Layout.Content className={'container'}>
-                <Row>
+                <Row justify="space-between">
                   <Col xs={1} sm={1} md={1} lg={2} xl={2} xxl={2}/> {/* Left gutter for large devices */}
-                  <Switch>
-                    <Route path={AppRoutes.AJUSTES}><Ajustes/></Route>
-                    <Route path={AppRoutes.HORARIO}>TBD...</Route>
-                    <Route path={AppRoutes.ICALENDAR}>TBD...</Route>
-                    <Route><Redirect to={AppRoutes.AJUSTES}/></Route>
-                  </Switch>
+                  <Col xs={22} sm={22} md={22} lg={20} xl={20} xxl={20}>
+                    <Switch>
+                      <Route path={AppRoutes.AJUSTES}><Ajustes/></Route>
+                      <Route path={AppRoutes.HORARIO}>TBD...</Route>
+                      <Route path={AppRoutes.ICALENDAR}>TBD...</Route>
+                      <Route><Redirect to={AppRoutes.AJUSTES}/></Route>
+                    </Switch>
+                  </Col>
                   <Col xs={1} sm={1} md={1} lg={2} xl={2} xxl={2}/> {/* Right gutter for large devices */}
                 </Row>
               </Layout.Content>
