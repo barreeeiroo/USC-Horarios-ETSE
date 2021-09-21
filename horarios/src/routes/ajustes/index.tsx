@@ -45,13 +45,11 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
 
   render() {
     return (
-      <Layout.Content>
-        <Row>
+        <Row justify="space-between">
           <Col>
             <h1>Prueba</h1>
           </Col>
         </Row>
-      </Layout.Content>
     );
   }
 }

@@ -6,3 +6,6 @@ export type Periodos = typeof periodos[number];
 
 export const tiposClase = ["CLE", "CLIS", "CLIL"] as const;
 export type TiposClase = typeof tiposClase[number];
+
+export const hojas = ["ASIGNATURAS", "CLASES", "PERIODOS", "FESTIVOS", "GRUPOS"] as const;
+export type Hojas = typeof hojas[number];

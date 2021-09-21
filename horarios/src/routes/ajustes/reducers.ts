@@ -1,48 +1,48 @@
 import {
   AjustesActionTypes,
   AjustesState,
-  DESELECCIONAR_ASIGNATURA,
+  CARGAR_ASIGNATURAS,
   NUEVA_ASIGNATURA,
+  NUEVA_CLASE,
   NUEVO_GRUPO,
-  SELECCIONAR_ASIGNATURA,
 } from "./types";
-import Asignatura from "models/asignatura";
 
 export const initialState: AjustesState = {
   asignaturas: [],
-  grupos: [],
 
   matricula: []
 }
 
 export function ajustesReducer(state = initialState, action: AjustesActionTypes): AjustesState {
   let newState: AjustesState = JSON.parse(JSON.stringify(state));
+  let asignatura, clase;
 
   switch (action.type) {
     case NUEVA_ASIGNATURA:
       newState = {...state, asignaturas: [...state.asignaturas, action.payload.asignatura]};
       return newState;
 
-    case NUEVO_GRUPO:
-      newState = {...state, grupos: [...state.grupos, action.payload.grupo]};
+    case CARGAR_ASIGNATURAS:
+      newState = {...state, matricula: action.payload.asignaturas};
       return newState;
 
-    case SELECCIONAR_ASIGNATURA:
-      let asignatura = state.asignaturas.find(a => a.codigo === action.payload.codigo);
+    case NUEVA_CLASE:
+      asignatura = newState.asignaturas.find(a => a.abreviatura === action.payload.clase.asignatura);
       if (asignatura === undefined)
-        throw new Error("WTF esto no es posible");
+        throw new Error();
 
-      newState = {...state, matricula: [...state.matricula, asignatura]};
+      asignatura.clases.push(action.payload.clase);
       return newState;
 
-    case DESELECCIONAR_ASIGNATURA:
-      let asignaturas: Asignatura[] = [];
-      state.matricula.forEach(a => {
-        if (a.codigo !== action.payload.codigo)
-          asignaturas.push(a);
-      });
+    case NUEVO_GRUPO:
+      asignatura = newState.asignaturas.find(a => a.abreviatura === action.payload.grupo.asignatura);
+      if (asignatura === undefined)
+        throw new Error();
+      clase = asignatura.clases.find(c => c.tipo === action.payload.grupo.tipo);
+      if (clase === undefined)
+        throw new Error();
 
-      newState = {...state, matricula: asignaturas};
+      clase.grupos.push(action.payload.grupo);
       return newState;
 
     default:
