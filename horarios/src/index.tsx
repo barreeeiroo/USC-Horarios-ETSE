@@ -2,13 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'index.less';
 import App from 'components/app';
+import {ConfigProvider} from "antd";
+import esES from 'antd/lib/locale/es_ES';
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider locale={esES}>
+      <App/>
+    </ConfigProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('etse')
 );
 
 // If you want to start measuring performance in your app, pass a function

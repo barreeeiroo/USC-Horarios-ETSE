@@ -1,10 +1,9 @@
-// ant.design stuff
 @import '~antd/lib/style/themes/default.less';
 @import '~antd/dist/antd.less';
 
-// Fonts from Google
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
 
 body {
   margin: 0;
@@ -13,3 +12,84 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-y: scroll;
 }
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+.abcRioButton {
+  display: inline-block;
+}
+
+.container {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.max-width {
+  width: 100%;
+}
+
+@primary-50: #ffe7e6;
+@primary-100: #ffc8b9;
+@primary-200: #ffa38c;
+@primary-300: #ff7c5d;
+@primary-400: #ff593a;
+@primary-500: #ff2c14;
+@primary-600: #ff2410;
+@primary-700: #fc1808;
+@primary-800: #ee0202;
+@primary-900: #d70000;
+
+@secondary-900: #8a004e;
+@secondary-800: #b00055;
+@secondary-700: #c50058;
+@secondary-600: #db005c;
+@secondary-500: #ec005f;
+@secondary-400: #ee0278;
+@secondary-300: #f14c91;
+@secondary-200: #f484b1;
+@secondary-100: #f8b5d0;
+@secondary-50: #fce2ec;
+
+@tertiary-900: #de4e02;
+@tertiary-800: #e86802;
+@tertiary-700: #ee7802;
+@tertiary-600: #f48802;
+@tertiary-500: #f89302;
+@tertiary-400: #f9a326;
+@tertiary-300: #fab34c;
+@tertiary-200: #fbc97f;
+@tertiary-100: #fddeb1;
+@tertiary-50: #fef2e0;
+
+@accent-900: #00726a;
+@accent-800: #009799;
+@accent-700: #00abb2;
+@accent-600: #00c1ce;
+@accent-500: #00d2e1;
+@accent-400: #00dbe3;
+@accent-300: #00e4e8;
+@accent-200: #02eeee;
+@accent-100: #96f5f3;
+@accent-50: #d7fbfa;
+
+@primary-color: @primary-800; // primary color for all components (800)
+@secondary-color: @tertiary-700;
+@accent-color: @accent-200;
+
+@link-color: @primary-800; // link color
+@success-color: #02ee02; // success state color
+@warning-color: #eeee02; // warning state color
+@error-color: #ff2c14; // error state color
+@font-size-base: 14px; // major text font size
+@heading-color: rgba(0, 0, 0, 0.85); // heading text color
+@text-color: rgba(0, 0, 0, 0.65); // major text color
+@text-color-secondary: rgba(0, 0, 0, 0.45); // secondary text color
+@disabled-color: rgba(0, 0, 0, 0.25); // disable state color
+@border-radius-base: 2px; // major border radius
+@border-color-base: #d9d9d9; // major border color
+@box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
+@surface-color: #F6F6F6;

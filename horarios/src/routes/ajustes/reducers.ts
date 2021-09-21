@@ -8,7 +8,7 @@ import {
 } from "./types";
 import Asignatura from "models/asignatura";
 
-const initialState: AjustesState = {
+export const initialState: AjustesState = {
   asignaturas: [],
   grupos: [],
 
