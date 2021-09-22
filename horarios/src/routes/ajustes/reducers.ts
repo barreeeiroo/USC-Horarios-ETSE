@@ -1,6 +1,7 @@
 import {
   AjustesActionTypes,
   AjustesState,
+  CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS,
   CARGAR_ASIGNATURAS,
   NUEVA_ASIGNATURA,
   NUEVA_CLASE,
@@ -12,6 +13,7 @@ export const initialState: AjustesState = {
   asignaturas: [],
   grupos: [],
 
+  selectorVisible: false,
   matricula: []
 }
 
@@ -22,10 +24,6 @@ export function ajustesReducer(state = initialState, action: AjustesActionTypes)
   switch (action.type) {
     case NUEVA_ASIGNATURA:
       newState = {...newState, asignaturas: [...newState.asignaturas, action.payload.asignatura]};
-      return newState;
-
-    case CARGAR_ASIGNATURAS:
-      newState = {...newState, matricula: action.payload.asignaturas};
       return newState;
 
     case NUEVA_CLASE:
@@ -67,6 +65,14 @@ export function ajustesReducer(state = initialState, action: AjustesActionTypes)
       });
 
       newState.grupos = [];
+      return newState;
+
+    case CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS:
+      newState = {...newState, selectorVisible: !newState.selectorVisible};
+      return newState;
+
+    case CARGAR_ASIGNATURAS:
+      newState = {...newState, matricula: action.payload.asignaturas};
       return newState;
 
     default:

@@ -1,13 +1,16 @@
 import {
-  SelectorAsignaturasActionTypes,
-  SelectorAsignaturasState,
+  CAMBIAR_FILTRO_ASIGNATURAS,
   DESELECCIONAR_ASIGNATURA,
   SELECCIONAR_ASIGNATURA,
+  SelectorAsignaturasActionTypes,
+  SelectorAsignaturasState,
 } from "./types";
 import Asignatura from "models/asignatura";
 
 export const initialState: SelectorAsignaturasState = {
-  seleccionadas: []
+  // TODO(diego@kodular.io): Esto es un prop, no state
+  seleccionadas: [],
+  filtro: ""
 }
 
 export function selectorAsignaturasReducer(state = initialState, action: SelectorAsignaturasActionTypes): SelectorAsignaturasState {
@@ -19,17 +22,21 @@ export function selectorAsignaturasReducer(state = initialState, action: Selecto
       if (asignatura === undefined)
         throw new Error();
 
-      newState = {...state, seleccionadas: [...state.seleccionadas, asignatura]};
+      newState = {...newState, seleccionadas: [...newState.seleccionadas, asignatura]};
       return newState;
 
     case DESELECCIONAR_ASIGNATURA:
       let asignaturas: Asignatura[] = [];
-      state.seleccionadas.forEach(a => {
+      newState.seleccionadas.forEach(a => {
         if (a.codigo !== action.payload.codigo)
           asignaturas.push(a);
       });
 
-      newState = {...state, seleccionadas: asignaturas};
+      newState = {...newState, seleccionadas: asignaturas};
+      return newState;
+
+    case CAMBIAR_FILTRO_ASIGNATURAS:
+      newState = {...newState, filtro: action.payload.texto};
       return newState;
 
     default:

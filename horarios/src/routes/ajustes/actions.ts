@@ -1,6 +1,7 @@
 import {
   AjustesActionTypes,
   AjustesState,
+  CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS,
   CARGAR_ASIGNATURAS,
   NUEVA_ASIGNATURA,
   NUEVA_CLASE,
@@ -18,13 +19,6 @@ export function nuevaAsignatura(asignatura: Asignatura): AjustesActionTypes {
   return {
     type: NUEVA_ASIGNATURA,
     payload: {asignatura}
-  }
-}
-
-export function cargarAsignaturas(asignaturas: Asignatura[]): AjustesActionTypes {
-  return {
-    type: CARGAR_ASIGNATURAS,
-    payload: {asignaturas}
   }
 }
 
@@ -48,19 +42,34 @@ export function reasignarGrupos(): AjustesActionTypes {
   }
 }
 
+export function cambiarVisibilidadSelectorAsignaturas(): AjustesActionTypes {
+  return {
+    type: CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS
+  }
+}
+
+export function cargarAsignaturas(asignaturas: Asignatura[]): AjustesActionTypes {
+  return {
+    type: CARGAR_ASIGNATURAS,
+    payload: {asignaturas}
+  }
+}
+
 
 const mapState = (state: RootState): AjustesState => ({
   asignaturas: state.ajustes.asignaturas,
   grupos: state.ajustes.grupos,
+  selectorVisible: state.ajustes.selectorVisible,
   matricula: state.ajustes.matricula
 });
 
 const mapDispatch = {
   nuevaAsignatura: nuevaAsignatura,
-  cargarAsignaturas: cargarAsignaturas,
   nuevaClase: nuevaClase,
   nuevoGrupo: nuevoGrupo,
-  reasignarGrupos: reasignarGrupos
+  reasignarGrupos: reasignarGrupos,
+  cambiarVisibilidadSelectorAsignaturas: cambiarVisibilidadSelectorAsignaturas,
+  cargarAsignaturas: cargarAsignaturas
 }
 
 export const CONNECTOR = connect(mapState, mapDispatch);

@@ -1,12 +1,20 @@
 import React from "react";
 import {AjustesProps, AjustesState} from "./types";
-import {CONNECTOR, nuevaAsignatura, nuevaClase, nuevoGrupo, reasignarGrupos} from "./actions";
+import {
+  cambiarVisibilidadSelectorAsignaturas,
+  CONNECTOR,
+  nuevaAsignatura,
+  nuevaClase,
+  nuevoGrupo,
+  reasignarGrupos
+} from "./actions";
 import {withRouter} from "react-router-dom";
 import {ajustesReducer, initialState} from "routes/ajustes/reducers";
 import {Button, Col, Input, Layout, Row} from "antd";
 import {request} from "utils/http";
 import {BD} from "config";
 import {parsearAsignaturas, parsearClases, parsearGrupos} from "utils/spreadsheet-json";
+import SelectorAsignaturas from "components/selector-asignaturas";
 
 
 class Ajustes extends React.Component<AjustesProps, AjustesState> {
@@ -51,6 +59,7 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
             <Button
               className="max-width"
               type="default" size="large"
+              onClick={() => this.setState(ajustesReducer(this.state, cambiarVisibilidadSelectorAsignaturas()))}
             >
               9 Asignaturas
             </Button>
@@ -74,6 +83,7 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
             </Row>
           </Col>
         </Row>
+        <SelectorAsignaturas asignaturas={this.state.asignaturas} visible={this.state.selectorVisible} guardar={() => {}}/>
       </Layout.Content>
     );
   }

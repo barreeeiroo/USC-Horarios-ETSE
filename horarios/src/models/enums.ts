@@ -11,3 +11,5 @@ export type TiposClase = typeof tiposClase[number];
 
 export const hojas = [BD.ASIGNATURAS, BD.CLASES, BD.PERIODOS, BD.FESTIVOS, BD.GRUPOS] as const;
 export type Hojas = typeof hojas[number];
+
+export const cursosCardinales = ['Primer', 'Segundo', 'Tercer', 'Cuarto'];

@@ -1,4 +1,5 @@
 import {
+  CAMBIAR_FILTRO_ASIGNATURAS,
   DESELECCIONAR_ASIGNATURA,
   SELECCIONAR_ASIGNATURA,
   SelectorAsignaturasActionTypes,
@@ -22,13 +23,22 @@ export function deseleccionarAsignatura(codigo: string, asignaturas: Asignatura[
   }
 }
 
+export function cambiarFiltroAsignaturas(texto: string): SelectorAsignaturasActionTypes {
+  return {
+    type: CAMBIAR_FILTRO_ASIGNATURAS,
+    payload: {texto}
+  }
+}
+
 const mapState = (state: RootState): SelectorAsignaturasState => ({
-  seleccionadas: state.ajustes.seleccionadas
+  seleccionadas: state.selectorAsignaturas.seleccionadas,
+  filtro: state.selectorAsignaturas.filtro
 });
 
 const mapDispatch = {
   seleccionarAsignatura: seleccionarAsignatura,
-  deseleccionarAsignatura: deseleccionarAsignatura
+  deseleccionarAsignatura: deseleccionarAsignatura,
+  cambiarFiltroAsignaturas: cambiarFiltroAsignaturas
 }
 
 export const CONNECTOR = connect(mapState, mapDispatch);

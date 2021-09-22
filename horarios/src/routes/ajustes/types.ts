@@ -14,24 +14,23 @@ export interface AjustesState {
   // Grupos que no están asignados a asignaturas (temporal, luego se reasignan a asignaturas)
   grupos: Grupo[];
 
+  // Selector visible
+  selectorVisible: boolean;
   // Materias seleccionadas
   matricula: Asignatura[];
 }
 
 export const NUEVA_ASIGNATURA = 'NUEVA_ASIGNATURA';
-export const CARGAR_ASIGNATURAS = 'CARGAR_ASIGNATURAS';
 export const NUEVA_CLASE = 'NUEVA_CLASE';
 export const NUEVO_GRUPO = 'NUEVO_GRUPO';
 export const REASIGNAR_GRUPOS = 'REASIGNAR_GRUPOS'
 
+export const CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS = 'CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS';
+export const CARGAR_ASIGNATURAS = 'CARGAR_ASIGNATURAS';
+
 interface InsertarNuevaAsignaturaAction {
   type: typeof NUEVA_ASIGNATURA;
   payload: { asignatura: Asignatura };
-}
-
-interface GuardarCargaAsignaturasAction {
-  type: typeof CARGAR_ASIGNATURAS;
-  payload: { asignaturas: Asignatura[] }
 }
 
 interface InsertarNuevaClaseAction {
@@ -48,10 +47,20 @@ interface ReasignarGruposAction {
   type: typeof REASIGNAR_GRUPOS;
 }
 
+interface CambiarVisibilidadSelectorAsignaturasAction {
+  type: typeof CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS;
+}
+
+interface GuardarCargaAsignaturasAction {
+  type: typeof CARGAR_ASIGNATURAS;
+  payload: { asignaturas: Asignatura[] }
+}
+
 
 export type AjustesActionTypes =
-  InsertarNuevaAsignaturaAction |
-  GuardarCargaAsignaturasAction |
-  InsertarNuevaClaseAction      |
-  InsertarNuevoGrupoAction      |
-  ReasignarGruposAction;
+  InsertarNuevaAsignaturaAction               |
+  InsertarNuevaClaseAction                    |
+  InsertarNuevoGrupoAction                    |
+  ReasignarGruposAction                       |
+  CambiarVisibilidadSelectorAsignaturasAction |
+  GuardarCargaAsignaturasAction;
