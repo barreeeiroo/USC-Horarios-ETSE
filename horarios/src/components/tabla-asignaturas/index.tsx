@@ -1,14 +1,15 @@
 import React from "react";
 import {TablaAsignaturasProps, TablaAsignaturasState} from "components/tabla-asignaturas/types";
-import {withRouter} from "react-router-dom";
-import {CONNECTOR} from "components/tabla-asignaturas/actions";
 import {initialState} from "components/tabla-asignaturas/reducers";
-import {Radio, Table, Tooltip, Typography} from "antd";
+import {Col, Radio, Row, Table, Tooltip, Typography} from "antd";
 import {ColumnProps} from "antd/lib/table";
 import Asignatura from "models/asignatura";
 import {TiposClase} from "models/enums";
 import {Grupo} from "models/grupo";
 import {Clase} from "models/clase";
+import {CONNECTOR} from "components/tabla-asignaturas/actions";
+import {withRouter} from "react-router-dom";
+import './tabla-asignaturas.less';
 
 class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsignaturasState> {
   constructor(props: TablaAsignaturasProps) {
@@ -16,21 +17,19 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
     this.state = initialState;
 
     this.generarSelectorGrupos = this.generarSelectorGrupos.bind(this);
-  }
-
-  private generarSelectorRotacion(asignatura: Asignatura, tipo: TiposClase): JSX.Element {
-    // TODO
-    return <></>;
+    this.seleccionarGrupo = this.seleccionarGrupo.bind(this);
+    this.generarSelectorRotaciones = this.generarSelectorRotaciones.bind(this);
   }
 
   private generarSelectorGrupos(asignatura: Asignatura, tipo: TiposClase): JSX.Element {
-    let asignaturaCompleta = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
-    if (asignaturaCompleta === undefined) {
+    // Extraer la asignatura original
+    let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
+    if (asignaturaOriginal === undefined) {
       return <></>;
     }
 
     // Extraer todas las clases
-    let clases: Clase[] = asignaturaCompleta.clases.filter(c => c.tipo === tipo);
+    let clases: Clase[] = asignaturaOriginal.clases.filter(c => c.tipo === tipo);
     if (clases.length === 0) {
       return <></>;
     }
@@ -65,12 +64,126 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       }
     });
 
-    gruposValidos.sort((a,b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
-    return <Radio.Group buttonStyle="outline" onChange={e => console.log(e.target.value)}>
-      {gruposValidos.map((g, key) => <Radio.Button value={"" + (key + 1)} key={key}>
-        {g.inicio} - {g.fin}
-      </Radio.Button>)}
+    let numGrupo: number | undefined = asignatura.clases.filter(c => c.tipo === tipo)[0]?.grupo || undefined;
+    let hayRotaciones = false;
+    if (numGrupo !== undefined) {
+      let grupos = asignaturaOriginal.clases.filter(c => c.tipo === tipo && c.grupo === numGrupo)[0].grupos;
+      if (grupos.length > 0 && grupos[0].rotacion !== undefined) {
+        hayRotaciones = true;
+      }
+    }
+
+    gruposValidos.sort((a, b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
+    return <Radio.Group
+      buttonStyle={hayRotaciones ? "solid" : "outline"}
+      onChange={e => this.seleccionarGrupo(asignatura, tipo, e.target.value)}
+      value={numGrupo}
+    >
+      {gruposValidos.map((g, key) => {
+        return <Radio.Button value={key + 1} key={key}>
+          {g.inicio} - {g.fin}
+        </Radio.Button>
+      })}
     </Radio.Group>;
+  }
+
+  private generarSelectorRotaciones(asignatura: Asignatura, tipo: TiposClase): JSX.Element {
+    if (asignatura.clases.filter(c => c.tipo === tipo).length === 0) {
+      return <></>;
+    }
+
+    // Extraer la asignatura original
+    let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
+    if (asignaturaOriginal === undefined) {
+      return <></>;
+    }
+
+    // Extraer todas las clases
+    let clases: Clase[] = asignaturaOriginal.clases.filter(c => c.tipo === tipo);
+    if (clases.length === 0) {
+      return <></>;
+    }
+
+    let numGrupo = asignatura.clases.filter(c => c.tipo === tipo)[0].grupo;
+    let rotacion = asignatura.clases.filter(c => c.tipo === tipo)[0].grupos[0]?.rotacion || undefined;
+    // Extraer todos los grupos
+    let grupos: Grupo[] = [];
+    clases.forEach(clase => clase.grupos.forEach(grupo => {
+      let found = false;
+      grupos.forEach(g => {
+        if (JSON.stringify(g) === JSON.stringify(grupo)) found = true;
+      })
+      if (!found && grupo.grupo === numGrupo) grupos.push(grupo);
+    }));
+
+    grupos.sort((a, b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
+    return <Radio.Group
+      buttonStyle={"outline"}
+      onChange={e => this.seleccionarRotacion(asignatura, tipo, numGrupo, e.target.value)}
+      value={rotacion}
+    >
+      {grupos.map((g, key) => {
+        return <Radio.Button value={g.rotacion} key={key} className={'selector-rotaciones'}>
+          {g.inicio} - {g.fin}
+        </Radio.Button>
+      })}
+    </Radio.Group>;
+  }
+
+  private seleccionarGrupo(asignatura: Asignatura, tipo: TiposClase, nGrupo: number) {
+    let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
+    if (asignaturaOriginal === undefined) {
+      return;
+    }
+
+    // Extraer todas las clases
+    let clases: Clase[] = asignaturaOriginal.clases.filter(c => c.tipo === tipo && c.grupo === nGrupo);
+    if (clases.length === 0) {
+      return;
+    }
+
+    let i = asignatura.clases.length;
+    while (i--) {
+      if (asignatura.clases[i].tipo === tipo) {
+        asignatura.clases.splice(i, 1);
+      }
+    }
+
+    clases.forEach(clase => {
+      clase = JSON.parse(JSON.stringify(clase));
+      if (clase.grupos.length > 1) clase.grupos = [];
+      asignatura.clases.push(clase);
+    });
+
+    this.props.guardar(this.props.matricula);
+  }
+
+  private seleccionarRotacion(asignatura: Asignatura, tipo: TiposClase, nGrupo: number, rotacion: string) {
+    let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
+    if (asignaturaOriginal === undefined) {
+      return;
+    }
+
+    console.log(asignatura.abreviatura, tipo, nGrupo, rotacion);
+
+    // Extraer todas las clases
+    let clases: Clase[] = asignaturaOriginal.clases.filter(c => c.tipo === tipo && c.grupo === nGrupo);
+    if (clases.length === 0) {
+      return;
+    }
+
+    // Extraer todos los grupos
+    let grupos: Grupo[] = [];
+    clases.forEach(clase => clase.grupos.forEach(grupo => {
+      grupos.push(grupo);
+    }));
+
+    asignatura.clases.filter(c => c.tipo === tipo && c.grupo === nGrupo).forEach(clase => {
+      clase.grupos = [];
+      grupos.filter(g => g.rotacion === rotacion).forEach(grupo => clase.grupos.push(grupo));
+    });
+
+    this.props.guardar(this.props.matricula);
   }
 
   render() {
@@ -115,7 +228,10 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
         key: 'cle',
         sorter: false,
         align: "center",
-        render: (s: string, a: Asignatura) => this.generarSelectorGrupos(a, 'CLE')
+        render: (s: string, a: Asignatura) => <>
+          <Row><Col span={24}>{this.generarSelectorGrupos(a, 'CLE')}</Col></Row>
+          <Row><Col span={24}>{this.generarSelectorRotaciones(a, 'CLE')}</Col></Row>
+        </>
       },
       {
         title: 'Seminarios',
@@ -123,7 +239,10 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
         key: 'clis',
         sorter: false,
         align: "center",
-        render: (s: string, a: Asignatura) => this.generarSelectorGrupos(a, 'CLIS')
+        render: (s: string, a: Asignatura) => <>
+          <Row><Col span={24}>{this.generarSelectorGrupos(a, 'CLIS')}</Col></Row>
+          <Row><Col span={24}>{this.generarSelectorRotaciones(a, 'CLIS')}</Col></Row>
+        </>
       },
       {
         title: 'Interactivas',
@@ -131,14 +250,17 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
         key: 'clil',
         sorter: false,
         align: "center",
-        render: (s: string, a: Asignatura) => this.generarSelectorGrupos(a, 'CLIL')
+        render: (s: string, a: Asignatura) => <>
+          <Row><Col span={24}>{this.generarSelectorGrupos(a, 'CLIL')}</Col></Row>
+          <Row><Col span={24}>{this.generarSelectorRotaciones(a, 'CLIL')}</Col></Row>
+        </>
       },
     ];
 
     return (
       <Table
         columns={columns}
-        dataSource={this.props.seleccionadas}
+        dataSource={this.props.matricula}
         rowKey={r => r.abreviatura}
         loading={this.props.cargando}
         size="large"
@@ -148,6 +270,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       />
     );
   }
+
 }
 
 

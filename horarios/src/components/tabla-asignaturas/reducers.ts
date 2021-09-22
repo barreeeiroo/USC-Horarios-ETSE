@@ -3,7 +3,7 @@ import {TablaAsignaturasActionTypes, TablaAsignaturasState} from "components/tab
 export const initialState: TablaAsignaturasState = {}
 
 export function tablaAsignaturasReducer(state = initialState, action: TablaAsignaturasActionTypes): TablaAsignaturasState {
-  let newState: TablaAsignaturasState = JSON.parse(JSON.stringify(state));
+  // let newState: TablaAsignaturasState = JSON.parse(JSON.stringify(state));
 
   switch (action.type) {
     default:

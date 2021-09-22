@@ -5,7 +5,7 @@ import {PropsFromRedux} from "components/tabla-asignaturas/actions";
 export interface TablaAsignaturasProps extends PropsFromRedux, RouteComponentProps {
   asignaturas: Asignatura[];
   cargando: boolean;
-  seleccionadas: Asignatura[];
+  matricula: Asignatura[];
 
   guardar(asignaturas: Asignatura[]): void;
 }

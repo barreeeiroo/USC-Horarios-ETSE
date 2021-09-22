@@ -5,7 +5,7 @@ import {initialState, selectorAsignaturasReducer} from "components/selector-asig
 import {cambiarFiltroAsignaturas, CONNECTOR} from "components/selector-asignaturas/actions";
 import {TreeNode} from "models/ant";
 import Asignatura from "models/asignatura";
-import {cursosCardinales} from "models/enums";
+import {cursosCardinales, tiposClase} from "models/enums";
 import {withRouter} from "react-router-dom";
 import './selector-asignaturas.less';
 import {busquedaAlfanumerica} from "utils/standarization";
@@ -28,8 +28,34 @@ class SelectorAsignaturas extends React.Component<SelectorAsignaturasProps, Sele
     keys.forEach((key: string | number) => {
       switch (typeof key) {
         case "string":
-          let asignatura = this.props.asignaturas.find(a => a.abreviatura === key);
+          let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === key);
+          let asignatura = JSON.parse(JSON.stringify(asignaturaOriginal));
           if (asignatura !== undefined) {
+            asignatura.clases = this.props.seleccionadas.find(a => a.abreviatura === asignatura.abreviatura)?.clases || [];
+
+            tiposClase.forEach(tipo => {
+              if (asignatura !== undefined && asignaturaOriginal !== undefined) {
+                let clases = asignaturaOriginal.clases.filter(c => c.tipo === tipo);
+
+                let numGrupos: number[] = [];
+                clases.forEach(clase => {
+                  if (numGrupos.indexOf(clase.grupo) === -1) {
+                    numGrupos.push(clase.grupo);
+                  }
+                });
+
+                if (numGrupos.length === 1) {
+                  clases.forEach(clase => {
+                    clase = JSON.parse(JSON.stringify(clase));
+                    if (clase.grupos.length > 1) clase.grupos = this.props.seleccionadas
+                      .find(a => a.abreviatura === asignatura.abreviatura)?.clases
+                      .filter(c => c.tipo === clase.tipo)[0]?.grupos || [];
+                    asignatura.clases.push(clase);
+                  });
+                }
+              }
+            });
+
             asignaturas.push(asignatura);
           }
           break;

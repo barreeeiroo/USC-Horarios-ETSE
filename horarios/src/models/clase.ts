@@ -8,7 +8,6 @@ export interface Clase {
   dia: DiasSemana;
   inicio: string;
   fin: string;
-  // TODO(diego@kodular.io): Es necesario?
   grupo: number;
 
   aula?: string;

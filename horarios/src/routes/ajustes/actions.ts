@@ -4,7 +4,7 @@ import {
   CAMBIAR_APELLIDOS,
   CAMBIAR_CARGANDO,
   CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS,
-  CARGAR_ASIGNATURAS,
+  MATRICULAR,
   NUEVA_ASIGNATURA,
   NUEVA_CLASE,
   NUEVO_GRUPO,
@@ -56,17 +56,17 @@ export function cambiarVisibilidadSelectorAsignaturas(): AjustesActionTypes {
   }
 }
 
-export function cargarAsignaturas(asignaturas: Asignatura[]): AjustesActionTypes {
-  return {
-    type: CARGAR_ASIGNATURAS,
-    payload: {asignaturas}
-  }
-}
-
 export function cambiarApellidos(apellidos: string): AjustesActionTypes {
   return {
     type: CAMBIAR_APELLIDOS,
     payload: {apellidos}
+  }
+}
+
+export function matricular(asignaturas: Asignatura[]): AjustesActionTypes {
+  return {
+    type: MATRICULAR,
+    payload: {asignaturas}
   }
 }
 
@@ -87,8 +87,8 @@ const mapDispatch = {
   reasignarGrupos: reasignarGrupos,
   cambiarCargando: cambiarCargando,
   cambiarVisibilidadSelectorAsignaturas: cambiarVisibilidadSelectorAsignaturas,
-  cargarAsignaturas: cargarAsignaturas,
-  cambiarApellidos: cambiarApellidos
+  cambiarApellidos: cambiarApellidos,
+  matricular: matricular
 }
 
 export const CONNECTOR = connect(mapState, mapDispatch);

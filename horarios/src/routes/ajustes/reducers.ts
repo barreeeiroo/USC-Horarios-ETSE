@@ -4,7 +4,7 @@ import {
   CAMBIAR_APELLIDOS,
   CAMBIAR_CARGANDO,
   CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS,
-  CARGAR_ASIGNATURAS,
+  MATRICULAR,
   NUEVA_ASIGNATURA,
   NUEVA_CLASE,
   NUEVO_GRUPO,
@@ -79,12 +79,12 @@ export function ajustesReducer(state = initialState, action: AjustesActionTypes)
       newState = {...newState, selectorVisible: !newState.selectorVisible};
       return newState;
 
-    case CARGAR_ASIGNATURAS:
-      newState = {...newState, matricula: action.payload.asignaturas};
-      return newState;
-
     case CAMBIAR_APELLIDOS:
       newState = {...newState, apellidos: action.payload.apellidos};
+      return newState;
+
+    case MATRICULAR:
+      newState = {...newState, matricula: action.payload.asignaturas};
       return newState;
 
     default:

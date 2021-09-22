@@ -31,8 +31,9 @@ export const REASIGNAR_GRUPOS = 'REASIGNAR_GRUPOS'
 
 export const CAMBIAR_CARGANDO = 'CAMBIAR_CARGANDO';
 export const CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS = 'CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS';
-export const CARGAR_ASIGNATURAS = 'CARGAR_ASIGNATURAS';
 export const CAMBIAR_APELLIDOS = 'CAMBIAR_APELLIDOS';
+
+export const MATRICULAR = 'MATRICULAR';
 
 interface InsertarNuevaAsignaturaAction {
   type: typeof NUEVA_ASIGNATURA;
@@ -61,23 +62,23 @@ interface CambiarVisibilidadSelectorAsignaturasAction {
   type: typeof CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS;
 }
 
-interface GuardarCargaAsignaturasAction {
-  type: typeof CARGAR_ASIGNATURAS;
-  payload: { asignaturas: Asignatura[] };
-}
-
 interface CambiarApellidosAction {
   type: typeof CAMBIAR_APELLIDOS;
   payload: { apellidos: string };
 }
 
+interface MatricularAction {
+  type: typeof MATRICULAR;
+  payload: { asignaturas: Asignatura[] };
+}
+
 
 export type AjustesActionTypes =
-  InsertarNuevaAsignaturaAction               |
-  InsertarNuevaClaseAction                    |
-  InsertarNuevoGrupoAction                    |
-  ReasignarGruposAction                       |
-  CambiarCargandoAction                       |
+  InsertarNuevaAsignaturaAction |
+  InsertarNuevaClaseAction |
+  InsertarNuevoGrupoAction |
+  ReasignarGruposAction |
+  CambiarCargandoAction |
   CambiarVisibilidadSelectorAsignaturasAction |
-  GuardarCargaAsignaturasAction               |
-  CambiarApellidosAction;
+  CambiarApellidosAction |
+  MatricularAction;
