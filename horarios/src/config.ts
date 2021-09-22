@@ -35,3 +35,5 @@ export enum BD {
     GRUPOS__INICIO = "E",
     GRUPOS__FIN = "F",
 }
+
+export const LOCALSTORAGE_KEY = 'horario';

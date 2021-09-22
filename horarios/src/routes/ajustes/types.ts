@@ -14,10 +14,14 @@ export interface AjustesState {
   // Grupos que no están asignados a asignaturas (temporal, luego se reasignan a asignaturas)
   grupos: Grupo[];
 
+  // Descargando los datos
+  cargando: boolean;
   // Selector visible
   selectorVisible: boolean;
   // Materias seleccionadas
   matricula: Asignatura[];
+  // Apellidos para clasificar los grupos
+  apellidos: string;
 }
 
 export const NUEVA_ASIGNATURA = 'NUEVA_ASIGNATURA';
@@ -25,8 +29,10 @@ export const NUEVA_CLASE = 'NUEVA_CLASE';
 export const NUEVO_GRUPO = 'NUEVO_GRUPO';
 export const REASIGNAR_GRUPOS = 'REASIGNAR_GRUPOS'
 
+export const CAMBIAR_CARGANDO = 'CAMBIAR_CARGANDO';
 export const CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS = 'CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS';
 export const CARGAR_ASIGNATURAS = 'CARGAR_ASIGNATURAS';
+export const CAMBIAR_APELLIDOS = 'CAMBIAR_APELLIDOS';
 
 interface InsertarNuevaAsignaturaAction {
   type: typeof NUEVA_ASIGNATURA;
@@ -47,13 +53,22 @@ interface ReasignarGruposAction {
   type: typeof REASIGNAR_GRUPOS;
 }
 
+interface CambiarCargandoAction {
+  type: typeof CAMBIAR_CARGANDO;
+}
+
 interface CambiarVisibilidadSelectorAsignaturasAction {
   type: typeof CAMBIAR_VISIBILIDAD_SELECTOR_ASIGNATURAS;
 }
 
 interface GuardarCargaAsignaturasAction {
   type: typeof CARGAR_ASIGNATURAS;
-  payload: { asignaturas: Asignatura[] }
+  payload: { asignaturas: Asignatura[] };
+}
+
+interface CambiarApellidosAction {
+  type: typeof CAMBIAR_APELLIDOS;
+  payload: { apellidos: string };
 }
 
 
@@ -62,5 +77,7 @@ export type AjustesActionTypes =
   InsertarNuevaClaseAction                    |
   InsertarNuevoGrupoAction                    |
   ReasignarGruposAction                       |
+  CambiarCargandoAction                       |
   CambiarVisibilidadSelectorAsignaturasAction |
-  GuardarCargaAsignaturasAction;
+  GuardarCargaAsignaturasAction               |
+  CambiarApellidosAction;

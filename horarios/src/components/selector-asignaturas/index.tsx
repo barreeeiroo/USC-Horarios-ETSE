@@ -16,10 +16,30 @@ class SelectorAsignaturas extends React.Component<SelectorAsignaturasProps, Sele
     this.state = initialState;
 
     this.cambiarFiltroMaterias = this.cambiarFiltroMaterias.bind(this);
+    this.notificarAsignaturasSeleccionadas = this.notificarAsignaturasSeleccionadas.bind(this);
   }
 
   private cambiarFiltroMaterias(v: string) {
     this.setState(selectorAsignaturasReducer(this.state, cambiarFiltroAsignaturas(v)));
+  }
+
+  private notificarAsignaturasSeleccionadas(keys: any) {
+    let asignaturas: Asignatura[] = [];
+    keys.forEach((key: string | number) => {
+      switch (typeof key) {
+        case "string":
+          let asignatura = this.props.asignaturas.find(a => a.abreviatura === key);
+          if (asignatura !== undefined) {
+            asignaturas.push(asignatura);
+          }
+          break;
+
+        case "number":
+        default:
+          break;
+      }
+    });
+    this.props.guardar(asignaturas);
   }
 
   render() {
@@ -29,7 +49,7 @@ class SelectorAsignaturas extends React.Component<SelectorAsignaturasProps, Sele
         placement="right"
         closable
         className="asignaturas"
-        onClose={() => this.props.guardar(this.state.seleccionadas)}
+        onClose={() => this.props.cerrar()}
         visible={this.props.visible}
         key="1"
       >
@@ -41,8 +61,8 @@ class SelectorAsignaturas extends React.Component<SelectorAsignaturasProps, Sele
         <Tree
           selectable={false}
           checkable showLine={{showLeafIcon: false}}
-          // onCheck={this.actualizarMateriasSeleccionadas}
-          // checkedKeys={this.state.nodosSeleccionados.map(m => m.uuid)}
+          onCheck={this.notificarAsignaturasSeleccionadas}
+          checkedKeys={this.props.seleccionadas.map(a => a.abreviatura)}
           treeData={SelectorAsignaturas.generarTree(this.props.asignaturas, this.state.filtro)}
         />
       </Drawer>
