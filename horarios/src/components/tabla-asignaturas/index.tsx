@@ -3,15 +3,74 @@ import {TablaAsignaturasProps, TablaAsignaturasState} from "components/tabla-asi
 import {withRouter} from "react-router-dom";
 import {CONNECTOR} from "components/tabla-asignaturas/actions";
 import {initialState} from "components/tabla-asignaturas/reducers";
-import {Table, Tooltip, Typography} from "antd";
+import {Radio, Table, Tooltip, Typography} from "antd";
 import {ColumnProps} from "antd/lib/table";
 import Asignatura from "models/asignatura";
-import {cursosCardinales} from "models/enums";
+import {TiposClase} from "models/enums";
+import {Grupo} from "models/grupo";
+import {Clase} from "models/clase";
 
 class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsignaturasState> {
   constructor(props: TablaAsignaturasProps) {
     super(props);
     this.state = initialState;
+
+    this.generarSelectorGrupos = this.generarSelectorGrupos.bind(this);
+  }
+
+  private generarSelectorRotacion(asignatura: Asignatura, tipo: TiposClase): JSX.Element {
+    // TODO
+    return <></>;
+  }
+
+  private generarSelectorGrupos(asignatura: Asignatura, tipo: TiposClase): JSX.Element {
+    let asignaturaCompleta = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
+    if (asignaturaCompleta === undefined) {
+      return <></>;
+    }
+
+    // Extraer todas las clases
+    let clases: Clase[] = asignaturaCompleta.clases.filter(c => c.tipo === tipo);
+    if (clases.length === 0) {
+      return <></>;
+    }
+
+    // Extraer todos los grupos
+    let grupos: Grupo[] = [];
+    clases.forEach(clase => clase.grupos.forEach(grupo => {
+      let found = false;
+      grupos.forEach(g => {
+        if (JSON.stringify(g) === JSON.stringify(grupo)) found = true;
+      })
+      if (!found) grupos.push(grupo);
+    }));
+
+    let gruposValidos: {
+      grupos: Grupo[],
+      inicio: string,
+      fin: string
+    }[] = [];
+    grupos.forEach(grupo => {
+      while (gruposValidos.length < grupo.grupo) {
+        gruposValidos.push({grupos: [], inicio: "", fin: ""});
+      }
+
+      let grupoReal = gruposValidos[grupo.grupo - 1];
+      grupoReal.grupos.push(grupo);
+      if (grupoReal.inicio === "" || grupo.inicio < grupoReal.inicio) {
+        grupoReal.inicio = grupo.inicio
+      }
+      if (grupoReal.fin === "" || grupo.fin > grupoReal.fin) {
+        grupoReal.fin = grupo.fin;
+      }
+    });
+
+    gruposValidos.sort((a,b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
+    return <Radio.Group buttonStyle="outline" onChange={e => console.log(e.target.value)}>
+      {gruposValidos.map((g, key) => <Radio.Button value={"" + (key + 1)} key={key}>
+        {g.inicio} - {g.fin}
+      </Radio.Button>)}
+    </Radio.Group>;
   }
 
   render() {
@@ -25,7 +84,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
           multiple: 3
         },
         align: "center",
-        render: (s: string, a: Asignatura) => <Typography.Text>{cursosCardinales[a.curso - 1]}</Typography.Text>
+        render: (s: string, a: Asignatura) => <Typography.Text>{a.curso}º</Typography.Text>
       },
       {
         title: 'Cuatrimestre',
@@ -56,7 +115,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
         key: 'cle',
         sorter: false,
         align: "center",
-        render: (s: string, a: Asignatura) => <></>
+        render: (s: string, a: Asignatura) => this.generarSelectorGrupos(a, 'CLE')
       },
       {
         title: 'Seminarios',
@@ -64,7 +123,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
         key: 'clis',
         sorter: false,
         align: "center",
-        render: (s: string, a: Asignatura) => <></>
+        render: (s: string, a: Asignatura) => this.generarSelectorGrupos(a, 'CLIS')
       },
       {
         title: 'Interactivas',
@@ -72,7 +131,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
         key: 'clil',
         sorter: false,
         align: "center",
-        render: (s: string, a: Asignatura) => <></>
+        render: (s: string, a: Asignatura) => this.generarSelectorGrupos(a, 'CLIL')
       },
     ];
 
