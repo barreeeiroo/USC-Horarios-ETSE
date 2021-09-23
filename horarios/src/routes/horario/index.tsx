@@ -53,7 +53,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
               timeZone={"local"}
               nowIndicator={true}
               views={{
-                Agenda: {type: 'listWeek', duration: {days: 7}},
+                Agenda: {type: 'listWeek', duration: {days: 10}},
                 Semana: {type: 'timeGridWeek', weekends: false, allDaySlot: false},
                 Mes: {type: 'dayGridMonth'}
               }}
