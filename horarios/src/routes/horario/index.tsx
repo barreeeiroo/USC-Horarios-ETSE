@@ -57,7 +57,10 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                 Semana: {type: 'timeGridWeek', weekends: false, allDaySlot: false},
                 Mes: {type: 'dayGridMonth'}
               }}
-              businessHours={{daysOfWeek: [1, 2, 3, 4, 5], startTime: '09:00', endTime: '21:00'}}
+              businessHours={[
+                {daysOfWeek: [1, 2, 3, 4, 5], startTime: '09:00', endTime: '14:30'},
+                {daysOfWeek: [1, 2, 3, 4, 5], startTime: '15:00', endTime: '20:30'}
+              ]}
             />
           </Col>
         </Row>
