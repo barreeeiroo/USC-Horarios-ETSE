@@ -5,7 +5,7 @@ import {withRouter} from "react-router-dom";
 import {cambiarCargando, CONNECTOR, fijarFestivos, fijarMatricula, nuevoEvento} from "routes/horario/actions";
 import AppRoutes from "routes/index";
 import {generarAsignaturas, guardarMatricula} from "utils/share";
-import {Col, Descriptions, Layout, Popover, Row, Spin} from "antd";
+import {Col, Layout, Row, Spin} from "antd";
 import FullCalendar, {EventInput} from "@fullcalendar/react";
 import esLocale from '@fullcalendar/core/locales/es';
 import listPlugin from '@fullcalendar/list';
@@ -21,7 +21,6 @@ import {Festivo} from "models/festivo";
 import moment from "moment";
 import "./horario.less";
 import {colores} from "utils/colors";
-import ReactDOM from "react-dom";
 
 class Horario extends React.Component<HorarioProps, HorarioState> {
   constructor(props: HorarioProps) {
