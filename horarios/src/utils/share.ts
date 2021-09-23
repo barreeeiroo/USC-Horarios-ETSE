@@ -11,7 +11,7 @@ import {
 import {Grupo} from "models/grupo";
 import {Clase} from "models/clase";
 import {Periodo} from "models/periodo";
-import {Festivo} from "models/festivo";
+import assert from "assert";
 
 /**
  * Indica si hay datos guardados en localStorage.
@@ -138,7 +138,8 @@ const tieneClase = (clase: Clase, asignaturas: string[]): boolean => {
 const tieneGrupo = (grupo: Grupo, asignaturas: string[]): boolean => {
   for (let i in asignaturas) {
     let datos = asignaturas[i].split("_");
-    if (datos[0] === grupo.asignatura && datos[1] === grupo.tipo) {
+    // Se pone "-" indicando grupos globales
+    if ((grupo.asignatura === "-" || datos[0] === grupo.asignatura) && datos[1] === grupo.tipo) {
       let datos2 = datos[2].split("-");
       if (parseInt(datos2[0]) === grupo.grupo &&
         ((grupo.rotacion === undefined && datos2.length === 0) || (grupo.rotacion === datos2[1]))) {
@@ -195,7 +196,9 @@ export const generarAsignaturas = async (b64: string): Promise<Asignatura[]> => 
     asignatura.clases.forEach(clase => {
       if (clase.grupos.length === 0) {
         let grupos = gruposGlobales.filter(g => g.grupo === clase.grupo && g.tipo === clase.tipo);
-        grupos.forEach(grupo => clase.grupos.push(grupo));
+        grupos.forEach(grupo => {
+          if (tieneGrupo(grupo, strAsignaturas)) clase.grupos.push(grupo);
+        });
       }
     });
   });
@@ -225,27 +228,35 @@ export const generarAsignaturas = async (b64: string): Promise<Asignatura[]> => 
     });
   });
 
-  // Descargar todos los festivos
-  let festivosGlobales: Festivo[] = [];
-  parsearFestivos(await request(BD.FESTIVOS)).forEach(festivo => {
-    if (festivo.asignatura === "-") {
-      festivosGlobales.push(festivo);
-    } else {
+  // Revisar si hay periodos incompletos
+  asignaturas.forEach(asignatura => {
+    asignatura.clases.forEach(clase => {
+      clase.periodos.forEach(periodo => {
+        if (periodo.inicio === undefined) {
+          let periodoGlobal = periodosGlobales.find(p => p.tipo === asignatura.periodo || (asignatura.periodo === "ANG" && p.tipo === "1SG"));
+          assert(periodoGlobal !== undefined);
+          periodo.inicio = periodoGlobal.inicio;
+        }
+
+        if (periodo.fin === undefined) {
+          let periodoGlobal = periodosGlobales.find(p => p.tipo === asignatura.periodo || (asignatura.periodo === "ANG" && p.tipo === "2SG"));
+          assert(periodoGlobal !== undefined);
+          periodo.fin = periodoGlobal.fin;
+        }
+      });
+    });
+  });
+
+  // Descargar todos los festivos que no son globales
+  parsearFestivos(await request(BD.FESTIVOS, `SELECT * WHERE ${BD.FESTIVOS__ASIGNATURA}<>'-'`))
+    .forEach(festivo => {
       let asignatura = asignaturas.find(a => a.abreviatura === festivo.asignatura);
       if (asignatura !== undefined) {
         asignatura.clases.filter(c => c.tipo === festivo.tipo).forEach(clase => {
           clase.festivos.push(festivo);
         });
       }
-    }
-  });
-
-  asignaturas.forEach(asignatura => {
-    asignatura.clases.forEach(clase => {
-      let festivos = festivosGlobales.filter(f => f.tipo === "-" || f.tipo === clase.tipo);
-      festivos.forEach(festivo => clase.festivos.push(festivo));
-    })
-  });
+    });
 
   return asignaturas;
 }
