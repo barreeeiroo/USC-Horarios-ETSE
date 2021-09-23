@@ -138,7 +138,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                 events={this.state.eventos}
 
                 eventDidMount={(info) => {
-                  let eventTooltip = document.createElement("div");
+                  /* let eventTooltip = document.createElement("div");
                   eventTooltip.id = info.event.id;
                   info.el.appendChild(eventTooltip);
 
@@ -171,7 +171,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                     <div className={'componente-evento'}/>
                   </Popover>;
 
-                  ReactDOM.render(popover, document.getElementById(eventTooltip.id));
+                  ReactDOM.render(popover, document.getElementById(eventTooltip.id)); */
                 }}
               />
             </Spin>
