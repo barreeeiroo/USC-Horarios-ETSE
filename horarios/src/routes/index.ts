@@ -1,7 +1,7 @@
 export enum AppRoutes {
     AJUSTES = "/ajustes",
-    HORARIO = '/horario/:config',
-    ICALENDAR = '/ical/:config',
+    HORARIO = '/horario',
+    ICALENDAR = '/ical',
 }
 
 export default AppRoutes;

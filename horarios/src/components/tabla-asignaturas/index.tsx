@@ -39,23 +39,22 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
     clases.forEach(clase => clase.grupos.forEach(grupo => {
       let found = false;
       grupos.forEach(g => {
+        // Evitar insertar grupos duplicados (en caso de que una clase de mismo tipo tenga dos sesiones)
         if (JSON.stringify(g) === JSON.stringify(grupo)) found = true;
       })
       if (!found) grupos.push(grupo);
     }));
 
-    let gruposValidos: {
-      grupos: Grupo[],
-      inicio: string,
-      fin: string
-    }[] = [];
+    // Se genera un array donde se fusionan las rotaciones y se crean grupos virtuales
+    let gruposValidos: { inicio: string, fin: string }[] = [];
     grupos.forEach(grupo => {
+      // Se mantiene el número de grupo - 1 como posiciones
       while (gruposValidos.length < grupo.grupo) {
-        gruposValidos.push({grupos: [], inicio: "", fin: ""});
+        gruposValidos.push({inicio: "", fin: ""});
       }
 
+      // Comprobar mínimos y máximos en límites alfabéticos
       let grupoReal = gruposValidos[grupo.grupo - 1];
-      grupoReal.grupos.push(grupo);
       if (grupoReal.inicio === "" || grupo.inicio < grupoReal.inicio) {
         grupoReal.inicio = grupo.inicio
       }
@@ -64,6 +63,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       }
     });
 
+    // Comprobar si ya se ha seleccionado algún grupo
     let numGrupo: number | undefined = asignatura.clases.filter(c => c.tipo === tipo)[0]?.grupo || undefined;
     let hayRotaciones = false;
     if (numGrupo !== undefined) {
@@ -73,6 +73,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       }
     }
 
+    // Ordenar los grupos en función de su inicio
     gruposValidos.sort((a, b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
     return <Radio.Group
       buttonStyle={hayRotaciones ? "solid" : "outline"}
@@ -88,6 +89,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
   }
 
   private generarSelectorRotaciones(asignatura: Asignatura, tipo: TiposClase): JSX.Element {
+    // No se pueden generar rotaciones si no se ha seleccionado ningún grupo
     if (asignatura.clases.filter(c => c.tipo === tipo).length === 0) {
       return <></>;
     }
@@ -104,6 +106,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       return <></>;
     }
 
+    // Buscar las rotaciones y grupos seleccionadas
     let numGrupo = asignatura.clases.filter(c => c.tipo === tipo)[0].grupo;
     let rotacion = asignatura.clases.filter(c => c.tipo === tipo)[0].grupos[0]?.rotacion || undefined;
     // Extraer todos los grupos
@@ -111,11 +114,14 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
     clases.forEach(clase => clase.grupos.forEach(grupo => {
       let found = false;
       grupos.forEach(g => {
+        // Evitar insertar grupos duplicados
         if (JSON.stringify(g) === JSON.stringify(grupo)) found = true;
       })
+      // Insertar solo los grupos seleccionados
       if (!found && grupo.grupo === numGrupo) grupos.push(grupo);
     }));
 
+    // Ordenar las rotaciones en función de su inicio
     grupos.sort((a, b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
     return <Radio.Group
       buttonStyle={"outline"}
@@ -131,17 +137,19 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
   }
 
   private seleccionarGrupo(asignatura: Asignatura, tipo: TiposClase, nGrupo: number) {
+    // Extraer asignatura original
     let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
     if (asignaturaOriginal === undefined) {
       return;
     }
 
-    // Extraer todas las clases
+    // Extraer todas las clases del grupo
     let clases: Clase[] = asignaturaOriginal.clases.filter(c => c.tipo === tipo && c.grupo === nGrupo);
     if (clases.length === 0) {
       return;
     }
 
+    // Hay que eliminar las clases que se hayan seleccionado del mismo tipo, para insertarlas de nuevo
     let i = asignatura.clases.length;
     while (i--) {
       if (asignatura.clases[i].tipo === tipo) {
@@ -149,8 +157,10 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       }
     }
 
+    // Para cada clase del tipo y grupo, insertarla en la matrícula
     clases.forEach(clase => {
       clase = JSON.parse(JSON.stringify(clase));
+      // En caso de haber rotaciones, es porque hay más de un grupo, por lo tanto se resetea
       if (clase.grupos.length > 1) clase.grupos = [];
       asignatura.clases.push(clase);
     });
@@ -159,12 +169,11 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
   }
 
   private seleccionarRotacion(asignatura: Asignatura, tipo: TiposClase, nGrupo: number, rotacion: string) {
+    // Extraer asignatura original
     let asignaturaOriginal = this.props.asignaturas.find(a => a.abreviatura === asignatura.abreviatura);
     if (asignaturaOriginal === undefined) {
       return;
     }
-
-    console.log(asignatura.abreviatura, tipo, nGrupo, rotacion);
 
     // Extraer todas las clases
     let clases: Clase[] = asignaturaOriginal.clases.filter(c => c.tipo === tipo && c.grupo === nGrupo);
@@ -178,8 +187,11 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
       grupos.push(grupo);
     }));
 
+    // Para cada clase de la asignatura, grupo y tipo seleccionado, se ha de insertar la rotación seleccionada
     asignatura.clases.filter(c => c.tipo === tipo && c.grupo === nGrupo).forEach(clase => {
+      // Antes se resetean los grupos
       clase.grupos = [];
+      // Y ahora se inserta (a pesar de usar filter, se debería usar find ya que solo debería haber una coincidencia)
       grupos.filter(g => g.rotacion === rotacion).forEach(grupo => clase.grupos.push(grupo));
     });
 

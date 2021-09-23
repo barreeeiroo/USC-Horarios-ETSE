@@ -18,7 +18,7 @@ import {request} from "utils/http";
 import {BD} from "config";
 import {parsearAsignaturas, parsearClases, parsearGrupos} from "utils/spreadsheet-json";
 import SelectorAsignaturas from "components/selector-asignaturas";
-import {hayDatosGuardados} from "utils/share";
+import {generarUrl, getMatriculaValida, guardarMatricula, hayMatriculaGuardada} from "utils/share";
 import Asignatura from "models/asignatura";
 import TablaAsignaturas from "components/tabla-asignaturas";
 import {tiposClase} from "models/enums";
@@ -39,7 +39,7 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
   private guardarAsignaturasSeleccionadas(asignaturas: Asignatura[]) {
     let state = this.state;
     state = ajustesReducer(state, matricular(asignaturas));
-    this.setState(state);
+    this.setState(state, () => guardarMatricula(asignaturas));
   }
 
   private autoasignarGrupos() {
@@ -76,7 +76,10 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
       });
     });
 
-    this.setState(ajustesReducer(this.state, matricular(this.state.matricula)));
+    this.setState(
+      ajustesReducer(this.state, matricular(this.state.matricula)),
+      () => guardarMatricula(this.state.matricula)
+    );
   }
 
   componentDidMount() {
@@ -98,8 +101,11 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
 
           state = ajustesReducer(state, reasignarGrupos());
           state = ajustesReducer(state, cambiarCargando());
-          if (hayDatosGuardados()) {
-            // TODO(diego@kodular.io): Actualizar matrícula
+          if (hayMatriculaGuardada()) {
+            state = ajustesReducer(state, matricular(getMatriculaValida(/*state.asignaturas*/)));
+            // Actualizar datos guardados en caso de haber alguno no válido
+            // guardarMatricula(state.matricula);
+            console.log(generarUrl(state.matricula));
           } else {
             state = ajustesReducer(state, cambiarVisibilidadSelectorAsignaturas());
           }

@@ -7,6 +7,7 @@ import {AppProps, AppState} from "./types";
 import Ajustes from "routes/ajustes";
 import {Col, Layout, Row} from "antd";
 import Navbar from "components/navbar";
+import Horario from "routes/horario";
 
 
 export class App extends React.Component<AppProps, AppState> {
@@ -23,7 +24,7 @@ export class App extends React.Component<AppProps, AppState> {
                   <Col xs={22} sm={22} md={22} lg={20} xl={20} xxl={20}>
                     <Switch>
                       <Route path={AppRoutes.AJUSTES}><Ajustes/></Route>
-                      <Route path={AppRoutes.HORARIO}>TBD...</Route>
+                      <Route path={AppRoutes.HORARIO}><Horario/></Route>
                       <Route path={AppRoutes.ICALENDAR}>TBD...</Route>
                       <Route><Redirect to={AppRoutes.AJUSTES}/></Route>
                     </Switch>
