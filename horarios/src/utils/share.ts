@@ -1,9 +1,17 @@
 import {BD, LOCALSTORAGE_KEY} from "config";
 import Asignatura from "models/asignatura";
 import {request} from "utils/http";
-import {parsearAsignaturas, parsearClases, parsearGrupos} from "utils/spreadsheet-json";
+import {
+  parsearAsignaturas,
+  parsearClases,
+  parsearFestivos,
+  parsearGrupos,
+  parsearPeriodos
+} from "utils/spreadsheet-json";
 import {Grupo} from "models/grupo";
 import {Clase} from "models/clase";
+import {Periodo} from "models/periodo";
+import {Festivo} from "models/festivo";
 
 /**
  * Indica si hay datos guardados en localStorage.
@@ -153,10 +161,7 @@ export const generarAsignaturas = async (b64: string): Promise<Asignatura[]> => 
 
   // Obtener las asignaturas
   parsearAsignaturas(await request(BD.ASIGNATURAS)).forEach(asignatura => {
-    console.log(asignatura.abreviatura, tieneAsignatura(asignatura, strAsignaturas));
-    if (tieneAsignatura(asignatura, strAsignaturas)) {
-      asignaturas.push(asignatura);
-    }
+    if (tieneAsignatura(asignatura, strAsignaturas)) asignaturas.push(asignatura);
   });
 
   // Obtener las clases
@@ -193,6 +198,53 @@ export const generarAsignaturas = async (b64: string): Promise<Asignatura[]> => 
         grupos.forEach(grupo => clase.grupos.push(grupo));
       }
     });
+  });
+
+  // Descargar todos los periodos
+  let periodosGlobales: Periodo[] = [];
+  parsearPeriodos(await request(BD.PERIODOS)).forEach(periodo => {
+    if (periodo.asignatura === "-") {
+      periodosGlobales.push(periodo);
+    } else {
+      let asignatura = asignaturas.find(a => a.abreviatura === periodo.asignatura);
+      if (asignatura !== undefined) {
+        asignatura.clases.filter(c => c.tipo === periodo.tipo).forEach(clase => {
+          clase.periodos.push(periodo);
+        });
+      }
+    }
+  });
+
+  // Insertar los periodos globales en las asignaturas sin periodos
+  asignaturas.forEach(asignatura => {
+    asignatura.clases.forEach(clase => {
+      if (clase.periodos.length === 0) {
+        let periodos = periodosGlobales.filter(p => asignatura.periodo === "ANG" || asignatura.periodo === p.tipo);
+        periodos.forEach(periodo => clase.periodos.push(periodo));
+      }
+    });
+  });
+
+  // Descargar todos los festivos
+  let festivosGlobales: Festivo[] = [];
+  parsearFestivos(await request(BD.FESTIVOS)).forEach(festivo => {
+    if (festivo.asignatura === "-") {
+      festivosGlobales.push(festivo);
+    } else {
+      let asignatura = asignaturas.find(a => a.abreviatura === festivo.asignatura);
+      if (asignatura !== undefined) {
+        asignatura.clases.filter(c => c.tipo === festivo.tipo).forEach(clase => {
+          clase.festivos.push(festivo);
+        });
+      }
+    }
+  });
+
+  asignaturas.forEach(asignatura => {
+    asignatura.clases.forEach(clase => {
+      let festivos = festivosGlobales.filter(f => f.tipo === "-" || f.tipo === clase.tipo);
+      festivos.forEach(festivo => clase.festivos.push(festivo));
+    })
   });
 
   return asignaturas;

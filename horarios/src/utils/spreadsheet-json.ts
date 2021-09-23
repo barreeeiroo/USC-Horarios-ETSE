@@ -2,6 +2,7 @@ import Asignatura from "models/asignatura";
 import {Clase} from "models/clase";
 import {Periodo} from "models/periodo";
 import {Grupo} from "models/grupo";
+import {Festivo} from "models/festivo";
 
 export const parsearAsignaturas = (json: any): Asignatura[] => {
   const rows = json.table.rows;
@@ -54,9 +55,25 @@ export const parsearPeriodos = (json: any): Periodo[] => {
     const row = rows[i].c;
     out.push({
       asignatura: row[0].v,
-      fin: row[2].f,
-      inicio: row[3].f,
+      fin: row[3].f,
+      inicio: row[2].f,
       tipo: row[1].v
+    });
+  }
+
+  return out;
+};
+
+export const parsearFestivos = (json: any): Festivo[] => {
+  const rows = json.table.rows;
+  const out: Festivo[] = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i].c;
+    out.push({
+      asignatura: row[0].v,
+      tipo: row[1].v,
+      dia: row[2].f
     });
   }
 

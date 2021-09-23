@@ -18,7 +18,7 @@ import {request} from "utils/http";
 import {BD} from "config";
 import {parsearAsignaturas, parsearClases, parsearGrupos} from "utils/spreadsheet-json";
 import SelectorAsignaturas from "components/selector-asignaturas";
-import {generarUrl, getMatriculaValida, guardarMatricula, hayMatriculaGuardada} from "utils/share";
+import {getMatriculaValida, guardarMatricula, hayMatriculaGuardada} from "utils/share";
 import Asignatura from "models/asignatura";
 import TablaAsignaturas from "components/tabla-asignaturas";
 import {tiposClase} from "models/enums";
@@ -105,7 +105,6 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
             state = ajustesReducer(state, matricular(getMatriculaValida(/*state.asignaturas*/)));
             // Actualizar datos guardados en caso de haber alguno no válido
             // guardarMatricula(state.matricula);
-            console.log(generarUrl(state.matricula));
           } else {
             state = ajustesReducer(state, cambiarVisibilidadSelectorAsignaturas());
           }
