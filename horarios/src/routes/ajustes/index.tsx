@@ -23,6 +23,8 @@ import Asignatura from "models/asignatura";
 import TablaAsignaturas from "components/tabla-asignaturas";
 import {tiposClase} from "models/enums";
 import assert from "assert";
+import {Grupo} from "models/grupo";
+import {busquedaAlfanumerica} from "utils/standarization";
 
 
 class Ajustes extends React.Component<AjustesProps, AjustesState> {
@@ -48,18 +50,33 @@ class Ajustes extends React.Component<AjustesProps, AjustesState> {
       tiposClase.forEach(tipo => {
         assert(asignaturaOriginal !== undefined);
         let clases = asignaturaOriginal.clases.filter(c => c.tipo === tipo);
-        let numGrupos: number[] = [];
         clases.forEach(clase => {
-          if (numGrupos.indexOf(clase.grupo) === -1) numGrupos.push(clase.grupo);
-        });
+          let grupos: Grupo[] = [];
+          clase.grupos.forEach(grupo => {
+            let found = false;
+            grupos.forEach(g => {
+              if (JSON.stringify(g) === JSON.stringify(grupo)) found = true;
+            })
+            if (!found) grupos.push(grupo);
+          });
 
-        if (numGrupos.length === 1) {
-          clases.forEach(clase => asignatura.clases.push(clase));
-        } else {
-          // TODO
-        }
+          grupos.forEach(grupo => {
+            let intervalo = [busquedaAlfanumerica(grupo.inicio), busquedaAlfanumerica(grupo.fin)];
+            intervalo.push(busquedaAlfanumerica(this.state.apellidos));
+            intervalo.sort();
+
+            if (intervalo[1] === busquedaAlfanumerica(this.state.apellidos)) {
+              clase = JSON.parse(JSON.stringify(clase));
+              clase.grupos = [];
+              clase.grupos.push(grupo);
+              asignatura.clases.push(clase);
+            }
+          });
+        });
       });
     });
+
+    this.setState(ajustesReducer(this.state, matricular(this.state.matricula)));
   }
 
   componentDidMount() {
