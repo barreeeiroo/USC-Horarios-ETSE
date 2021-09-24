@@ -8,10 +8,16 @@ import Ajustes from "routes/ajustes";
 import {Col, Layout, Row} from "antd";
 import Navbar from "components/navbar";
 import Horario from "routes/horario";
+import {generarUrl, getMatriculaValida, hayMatriculaGuardada} from "utils/share";
 
 
 export class App extends React.Component<AppProps, AppState> {
   render() {
+    let rutaInicio: string = AppRoutes.AJUSTES;
+    if (hayMatriculaGuardada()) {
+      rutaInicio = AppRoutes.HORARIO + "/" + generarUrl(getMatriculaValida());
+    }
+
     return (
       <Provider store={store}>
         <Router>
@@ -26,7 +32,7 @@ export class App extends React.Component<AppProps, AppState> {
                       <Route path={AppRoutes.AJUSTES}><Ajustes/></Route>
                       <Route path={AppRoutes.HORARIO}><Horario/></Route>
                       <Route path={AppRoutes.ICALENDAR}>TBD...</Route>
-                      <Route><Redirect to={AppRoutes.AJUSTES}/></Route>
+                      <Route><Redirect to={rutaInicio}/></Route>
                     </Switch>
                   </Col>
                   <Col xs={1} sm={1} md={1} lg={2} xl={2} xxl={2}/> {/* Right gutter for large devices */}

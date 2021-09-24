@@ -65,18 +65,11 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
 
     // Comprobar si ya se ha seleccionado algún grupo
     let numGrupo: number | undefined = asignatura.clases.filter(c => c.tipo === tipo)[0]?.grupo || undefined;
-    let hayRotaciones = false;
-    if (numGrupo !== undefined) {
-      let grupos = asignaturaOriginal.clases.filter(c => c.tipo === tipo && c.grupo === numGrupo)[0].grupos;
-      if (grupos.length > 0 && grupos[0].rotacion !== undefined) {
-        hayRotaciones = true;
-      }
-    }
 
     // Ordenar los grupos en función de su inicio
     gruposValidos.sort((a, b) => (a.inicio > b.inicio) ? 1 : ((b.inicio > a.inicio) ? -1 : 0));
     return <Radio.Group
-      buttonStyle={hayRotaciones ? "solid" : "outline"}
+      buttonStyle={"solid"}
       onChange={e => this.seleccionarGrupo(asignatura, tipo, e.target.value)}
       value={numGrupo}
     >

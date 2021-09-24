@@ -69,9 +69,12 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
           // TODO(diego@kodular.io): Posibilidad de hacer más de dos rotaciones
           let rotaciones: string[] = clase.grupos[0].rotacion ? ["A", "B"] : ["A"];
           rotaciones.forEach((rotacion, key) => {
+            // Si no hay rotación, nunca es telemático
+            let aula = !clase.grupos[0].rotacion || rotacion === clase.grupos[0].rotacion ? clase.aula : "T";
+
             eventos.push({
               id: (Math.random() + 1).toString(36).substring(2),
-              title: `${clase.aula ? `[${rotacion === clase.grupos[0].rotacion ? clase.aula : "T"}]` : ``} ${asignatura.abreviatura}`,
+              title: `${clase.aula ? `[${aula}]` : ``} ${asignatura.abreviatura}`,
               rrule: {
                 freq: 'weekly',
                 interval: rotaciones.length,
@@ -111,7 +114,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
       <Layout.Content>
         <Row justify="space-between">
           <Col span={24}>
-            <Spin tip="Cargando..." spinning={this.state.cargando}>
+            <Spin tip="Cargando..." spinning={this.state.cargando} className={'fc'}>
               <FullCalendar
                 viewClassNames={'fc'}
                 headerToolbar={{
