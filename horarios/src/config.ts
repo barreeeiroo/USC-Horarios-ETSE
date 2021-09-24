@@ -37,3 +37,8 @@ export enum BD {
 }
 
 export const LOCALSTORAGE_KEY = 'horario';
+
+export const HORAS_LABORABLES = [
+  {inicio: '09:00', fin: '14:30'},
+  {inicio: '15:00', fin: '20:30'}
+];

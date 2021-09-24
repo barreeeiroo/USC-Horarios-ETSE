@@ -14,13 +14,14 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import rrulePlugin from '@fullcalendar/rrule';
 import {parsearFestivos} from "utils/spreadsheet-json";
 import {request} from "utils/http";
-import {BD} from "config";
+import {BD, HORAS_LABORABLES} from "config";
 import {diasSemana} from "models/enums";
 import Asignatura from "models/asignatura";
 import {Festivo} from "models/festivo";
 import moment from "moment";
 import "./horario.less";
 import {colores} from "utils/colors";
+import RRule from "rrule";
 
 class Horario extends React.Component<HorarioProps, HorarioState> {
   constructor(props: HorarioProps) {
@@ -61,10 +62,28 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
   private generarEventos(asignaturas: Asignatura[], festivos: Festivo[]): EventInput[] {
     let eventos: any[] = [];
 
+    const rruleFestivos: any[] = [];
+    festivos.forEach(f => {
+      rruleFestivos.push({
+        freq: RRule.MINUTELY,
+        count: 60 * 24,
+        dtstart: moment(f.dia, "MM/DD/YYYY").format('YYYY-MM-DD') + 'T' + HORAS_LABORABLES[0].inicio + ':00'
+      });
+    });
+
     asignaturas.forEach((asignatura, key) => {
       let color = colores[asignatura.periodo][key % colores[asignatura.periodo].length];
 
       asignatura.clases.forEach(clase => {
+        const rrruleFestivosClase: any[] = [];
+        clase.festivos.forEach(f => {
+          rrruleFestivosClase.push({
+            freq: RRule.MINUTELY,
+            count: 60 * 24,
+            dtstart: moment(f.dia, "MM/DD/YYYY").format('YYYY-MM-DD') + 'T' + HORAS_LABORABLES[0].inicio + ':00'
+          });
+        });
+
         clase.periodos.forEach(periodo => {
           // TODO(diego@kodular.io): Posibilidad de hacer más de dos rotaciones
           let rotaciones: string[] = clase.grupos[0].rotacion ? ["A", "B"] : ["A"];
@@ -88,10 +107,11 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                 until: moment(periodo.fin || "", "MM/DD/YYYY").add(1, 'day').format('YYYY-MM-DD')
               },
               duration: moment.utc(moment(clase.fin, "HH:mm").diff(moment(clase.inicio, "HH:mm"))).format("HH:mm"),
-              exdate: [
-                ...festivos.map(f => moment(f.dia, "MM/DD/YYYY").format("YYYY-MM-DD")),
-                ...clase.festivos.map(f => moment(f.dia, "MM/DD/YYYY").format("YYYY-MM-DD")),
-              ],
+              // exdate: [
+              //   ...festivos.map(f => moment(f.dia, "MM/DD/YYYY").format("YYYY-MM-DD")),
+              //   ...clase.festivos.map(f => moment(f.dia, "MM/DD/YYYY").format("YYYY-MM-DD")),
+              // ],
+              exrule: [...rruleFestivos, ...rrruleFestivosClase],
               color: color[clase.tipo],
               extendedProps: {
                 asignatura: asignatura,
@@ -102,6 +122,18 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
               }
             });
           });
+        });
+      });
+    });
+
+    festivos.forEach(festivo => {
+      HORAS_LABORABLES.forEach(horas => {
+        eventos.push({
+          start: moment(festivo.dia, "MM/DD/YYYY").format('YYYY-MM-DD') + "T" + horas.inicio,
+          // end: moment(festivo.dia, "MM/DD/YYYY").format('YYYY-MM-DD') + "T" + horas.fin,
+          allDay: true,
+          display: 'background',
+          color: 'var(--fc-non-business-color, rgba(215, 215, 215, 0.3))'
         });
       });
     });
@@ -133,10 +165,9 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                   Semana: {type: 'timeGridWeek', weekends: false, allDaySlot: false},
                   Mes: {type: 'dayGridMonth'}
                 }}
-                businessHours={[
-                  {daysOfWeek: [1, 2, 3, 4, 5], startTime: '09:00', endTime: '14:30'},
-                  {daysOfWeek: [1, 2, 3, 4, 5], startTime: '15:00', endTime: '20:30'}
-                ]}
+                businessHours={HORAS_LABORABLES.map(horas => {
+                  return {daysOfWeek: [1, 2, 3, 4, 5], startTime: horas.inicio, endTime: horas.fin};
+                })}
                 events={this.state.eventos}
 
                 eventDidMount={(info) => {
