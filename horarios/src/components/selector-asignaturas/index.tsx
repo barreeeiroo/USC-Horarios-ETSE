@@ -117,16 +117,20 @@ class SelectorAsignaturas extends React.Component<SelectorAsignaturasProps, Sele
   }
 
   private static generarTreeAsignaturas(asignaturas: Asignatura[], filtro: string): TreeNode[] {
-    return asignaturas.filter(asignatura => {
+    return asignaturas/*.filter(asignatura => {
       if (filtro.length < 3) return true;
 
       return busquedaAlfanumerica(asignatura.nombre).includes(busquedaAlfanumerica(filtro)) ||
         busquedaAlfanumerica(asignatura.abreviatura).includes(busquedaAlfanumerica(filtro));
-    })
+    })*/
       .map(asignatura => {
         return {
           key: asignatura.abreviatura,
           title: SelectorAsignaturas.asignaturaTreeTitulo(asignatura),
+          style: {
+            display: busquedaAlfanumerica(asignatura.nombre).includes(busquedaAlfanumerica(filtro)) ||
+            busquedaAlfanumerica(asignatura.abreviatura).includes(busquedaAlfanumerica(filtro)) ? undefined : "none"
+          },
           checkable: true,
           isLeaf: true
         }
