@@ -88,7 +88,7 @@ export const parsearGrupos = (json: any): Grupo[] => {
     const row = rows[i].c;
     out.push({
       asignatura: row[0].v,
-      fin: row[5].v,
+      fin: row[5].v + "~",
       grupo: row[2].v,
       inicio: row[4].v,
       rotacion: row[3] === null ? undefined : row[3].v,

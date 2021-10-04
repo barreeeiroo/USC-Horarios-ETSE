@@ -75,7 +75,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
     >
       {gruposValidos.map((g, key) => {
         return <Radio.Button value={key + 1} key={key}>
-          {g.inicio} - {g.fin}
+          {g.inicio} - {g.fin.replace("~", "")}
         </Radio.Button>
       })}
     </Radio.Group>;
@@ -123,7 +123,7 @@ class TablaAsignaturas extends React.Component<TablaAsignaturasProps, TablaAsign
     >
       {grupos.map((g, key) => {
         return <Radio.Button value={g.rotacion} key={key} className={'selector-rotaciones'}>
-          {g.inicio} - {g.fin}
+          {g.inicio} - {g.fin.replace("~", "")}
         </Radio.Button>
       })}
     </Radio.Group>;
