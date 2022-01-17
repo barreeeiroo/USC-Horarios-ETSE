@@ -1,5 +1,6 @@
 import {Periodos} from "./enums";
 import {Clase} from "./clase";
+import {Examen} from "./examen";
 
 export default interface Asignatura {
   curso: number;
@@ -9,4 +10,5 @@ export default interface Asignatura {
   periodo: Periodos;
 
   clases: Clase[];
+  examenes: Examen[];
 }

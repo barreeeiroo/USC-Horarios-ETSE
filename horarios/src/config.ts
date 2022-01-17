@@ -34,6 +34,13 @@ export enum BD {
     GRUPOS__ROTACION = "D",
     GRUPOS__INICIO = "E",
     GRUPOS__FIN = "F",
+
+  EXAMENES = "EXAMENES",
+    EXAMENES__ASIGNATURA = "A",
+    EXAMENES__OPORTUNIDAD = "B",
+    EXAMENES__FECHA = "C",
+    EXAMENES__HORA = "D",
+    EXAMENES__AULAS = "E",
 }
 
 export const LOCALSTORAGE_KEY = 'horario';

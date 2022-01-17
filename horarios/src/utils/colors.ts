@@ -23,3 +23,5 @@ export const colores = {
   "2SG": [pink, deepPurple, blue, cyan, green, lime, amber, deepOrange],
   "ANG": [brown, grey, blueGrey]
 }
+
+export const COLOR_EXAMEN = "#000000";

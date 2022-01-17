@@ -3,6 +3,7 @@ import {Clase} from "models/clase";
 import {Periodo} from "models/periodo";
 import {Grupo} from "models/grupo";
 import {Festivo} from "models/festivo";
+import {Examen} from "models/examen";
 
 export const parsearAsignaturas = (json: any): Asignatura[] => {
   const rows = json.table.rows;
@@ -14,10 +15,11 @@ export const parsearAsignaturas = (json: any): Asignatura[] => {
     out.push({
       curso: row[0].v,
       abreviatura: row[3].v,
-      clases: [],
       codigo: row[1].v,
       nombre: row[2].v,
-      periodo: row[4].v
+      periodo: row[4].v,
+      clases: [],
+      examenes: [],
     });
   }
 
@@ -98,3 +100,21 @@ export const parsearGrupos = (json: any): Grupo[] => {
 
   return out;
 };
+
+export const parsearExamenes = (json: any): Examen[] => {
+  const rows = json.table.rows;
+  const out: Examen[] = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i].c;
+    out.push({
+      asignatura: row[0].v,
+      oportunidad: row[1].v,
+      fecha: row[2].f,
+      hora: row[3].f,
+      aulas: row[4].v.split(" "),
+    });
+  }
+
+  return out
+}

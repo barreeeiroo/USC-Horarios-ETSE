@@ -20,7 +20,7 @@ import Asignatura from "models/asignatura";
 import {Festivo} from "models/festivo";
 import moment from "moment";
 import "./horario.less";
-import {colores} from "utils/colors";
+import {COLOR_EXAMEN, colores} from "utils/colors";
 import RRule from "rrule";
 
 class Horario extends React.Component<HorarioProps, HorarioState> {
@@ -122,6 +122,20 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
               }
             });
           });
+        });
+      });
+
+      asignatura.examenes.forEach(examen => {
+        eventos.push({
+          id: (Math.random() + 1).toString(36).substring(2),
+          title: `[${examen.oportunidad !== "FC" ? `${examen.oportunidad}ª OP` : ""}] ${asignatura.abreviatura} (${examen.aulas.join(", ")})`,
+          start: `${examen.fecha}T${examen.hora}`,
+          end: `${examen.fecha}T${moment(examen.hora, "HH:mm").add(4, 'hours').format("HH:mm")}`,
+          color: COLOR_EXAMEN,
+          extendedProps: {
+            asignatura: asignatura,
+            examen: examen,
+          }
         });
       });
     });

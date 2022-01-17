@@ -4,6 +4,7 @@ import {request} from "utils/http";
 import {
   parsearAsignaturas,
   parsearClases,
+  parsearExamenes,
   parsearFestivos,
   parsearGrupos,
   parsearPeriodos
@@ -255,6 +256,15 @@ export const generarAsignaturas = async (b64: string): Promise<Asignatura[]> => 
         asignatura.clases.filter(c => c.tipo === festivo.tipo).forEach(clase => {
           clase.festivos.push(festivo);
         });
+      }
+    });
+
+  // Descargar los exámenes
+  parsearExamenes(await request(BD.EXAMENES))
+    .forEach(examen => {
+      let asignatura = asignaturas.find(a => a.abreviatura === examen.asignatura);
+      if (asignatura !== undefined) {
+        asignatura.examenes.push(examen);
       }
     });
 
