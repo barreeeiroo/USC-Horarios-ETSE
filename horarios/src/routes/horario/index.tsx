@@ -128,7 +128,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
       asignatura.examenes.forEach(examen => {
         eventos.push({
           id: (Math.random() + 1).toString(36).substring(2),
-          title: `[${examen.oportunidad !== "FC" ? `${examen.oportunidad}ª OP` : ""}] ${asignatura.abreviatura} (${examen.aulas.join(", ")})`,
+          title: `[${examen.oportunidad} ${examen.oportunidad !== "FC" ? "ª OP" : ""}] ${asignatura.abreviatura} (${examen.aulas.join(", ")})`,
           start: `${examen.fecha}T${examen.hora}`,
           end: `${examen.fecha}T${moment(examen.hora, "HH:mm").add(4, 'hours').format("HH:mm")}`,
           color: COLOR_EXAMEN,
