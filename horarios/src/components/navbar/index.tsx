@@ -50,7 +50,7 @@ export class Navbar extends React.Component<NavbarProps, NavbarState> {
           <Menu.Item key={AppRoutes.AJUSTES}>Ajustes</Menu.Item>
           <Menu.Item key={AppRoutes.HORARIO}>Horario</Menu.Item>
           <Menu.Item className="menu-right" key={AppRoutes.GITHUB} icon={<Icon
-            path={MDI.mdiGithub} size={1.2} className="icon-mtop"
+            path={MDI.mdiGithub} size={1.2} className="icon-navbar"
           />}>
             Ver en Github
           </Menu.Item>
