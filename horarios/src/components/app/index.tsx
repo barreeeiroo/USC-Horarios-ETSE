@@ -9,6 +9,7 @@ import {Col, Layout, Row} from "antd";
 import Navbar from "components/navbar";
 import Horario from "routes/horario";
 import {generarUrl, getMatriculaValida, hayMatriculaGuardada} from "utils/share";
+import Fab from "components/fab";
 
 
 export class App extends React.Component<AppProps, AppState> {
@@ -43,6 +44,7 @@ export class App extends React.Component<AppProps, AppState> {
                 por <a href="https://diego.barreiro.xyz" target="_blank" rel="noreferrer">Diego Barreiro</a>
               </Layout.Footer>
             </Layout>
+            <Fab/>
           </Layout>
         </Router>
       </Provider>
