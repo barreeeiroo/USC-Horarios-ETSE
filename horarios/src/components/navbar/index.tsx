@@ -6,6 +6,8 @@ import logoUsc from "assets/usc.png";
 import './navbar.less';
 import AppRoutes from "routes";
 import {generarUrl, getMatriculaValida} from "utils/share";
+import Icon from "@mdi/react";
+import * as MDI from "@mdi/js";
 
 
 export class Navbar extends React.Component<NavbarProps, NavbarState> {
@@ -23,6 +25,11 @@ export class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 
   private irA(key: AppRoutes): void {
+    if (key === AppRoutes.GITHUB) {
+      window.open("https://github.com/barreeeiroo/Horarios-ETSE", '_blank');
+      return;
+    }
+
     let url: string = key;
     if (key === AppRoutes.HORARIO) {
       url += "/" + encodeURI(generarUrl(getMatriculaValida()));
@@ -42,6 +49,11 @@ export class Navbar extends React.Component<NavbarProps, NavbarState> {
         >
           <Menu.Item key={AppRoutes.AJUSTES}>Ajustes</Menu.Item>
           <Menu.Item key={AppRoutes.HORARIO}>Horario</Menu.Item>
+          <Menu.Item className="menu-right" key={AppRoutes.GITHUB} icon={<Icon
+            path={MDI.mdiGithub} size={1.2} className="icon-mtop"
+          />}>
+            Ver en Github
+          </Menu.Item>
         </Menu>
       </Layout.Header>
     );
