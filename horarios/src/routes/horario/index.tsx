@@ -71,8 +71,10 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
       });
     });
 
+    const colorKeys = {"1SG": 0, "2SG": 0, "ANG": 0};
     asignaturas.forEach((asignatura, key) => {
-      let color = colores[asignatura.periodo][key % colores[asignatura.periodo].length];
+      let color = colores[asignatura.periodo][colorKeys[asignatura.periodo] % colores[asignatura.periodo].length];
+      colorKeys[asignatura.periodo] += 1;
 
       asignatura.clases.forEach(clase => {
         const rrruleFestivosClase: any[] = [];
