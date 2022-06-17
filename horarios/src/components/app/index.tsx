@@ -40,7 +40,7 @@ export class App extends React.Component<AppProps, AppState> {
                 </Row>
               </Layout.Content>
               <Layout.Footer style={{textAlign: 'center'}}>
-                Horarios ETSE © 2021-2022 | Creado
+                Horarios ETSE © 2022-2023 | Creado
                 por <a href="https://diego.barreiro.xyz" target="_blank" rel="noreferrer">Diego Barreiro</a>
               </Layout.Footer>
             </Layout>
