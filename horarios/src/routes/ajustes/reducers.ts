@@ -49,7 +49,7 @@ export function ajustesReducer(state = initialState, action: AjustesActionTypes)
         throw new Error();
       let clases = asignatura.clases.filter(c => c.tipo === action.payload.grupo.tipo && c.grupo === action.payload.grupo.grupo);
       if (clases === undefined || clases.length === 0)
-        throw new Error();
+        return newState;
 
       clases.forEach(clase => {
         clase.grupos.push(action.payload.grupo);
