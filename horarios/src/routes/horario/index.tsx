@@ -218,6 +218,8 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                 businessHours={HORAS_LABORABLES.map(horas => {
                   return {daysOfWeek: [1, 2, 3, 4, 5], startTime: horas.inicio, endTime: horas.fin};
                 })}
+                slotMinTime={'08:00'}
+                slotMaxTime={'21:00'}
                 events={this.state.eventos}
                 resources={this.parsearRecursos(this.state.edificios)}
                 resourceGroupField='building'
