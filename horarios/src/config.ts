@@ -16,6 +16,11 @@ export enum BD {
     CLASES__TIPO = "F",
     CLASES__GRUPO = "G",
 
+  AULAS = "AULAS",
+    AULAS__NOMBRE = "A",
+    AULAS__TIPO = "B",
+    AULAS__EDIFICIO = "C",
+
   PERIODOS = "PERIODOS",
     PERIODOS__ASIGNATURA = "A",
     PERIODOS__TIPO = "B",

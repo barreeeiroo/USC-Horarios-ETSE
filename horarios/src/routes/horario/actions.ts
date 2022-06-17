@@ -4,6 +4,7 @@ import {
   CAMBIAR_CARGANDO,
   FIJAR_FESTIVOS,
   FIJAR_MATRICULA,
+  FIJAR_RECURSOS,
   HorarioActionTypes,
   HorarioState,
   NUEVO_EVENTO
@@ -11,6 +12,7 @@ import {
 import Asignatura from "models/asignatura";
 import {Festivo} from "models/festivo";
 import {EventInput} from "@fullcalendar/react";
+import {Edificio} from "models/aula";
 
 export function cambiarCargando(): HorarioActionTypes {
   return {
@@ -32,6 +34,13 @@ export function fijarFestivos(festivos: Festivo[]): HorarioActionTypes {
   }
 }
 
+export function fijarRecursos(edificios: Edificio[]): HorarioActionTypes {
+  return {
+    type: FIJAR_RECURSOS,
+    payload: {edificios: edificios}
+  }
+}
+
 export function nuevoEvento(evento: EventInput): HorarioActionTypes {
   return {
     type: NUEVO_EVENTO,
@@ -43,6 +52,7 @@ const mapState = (state: RootState): HorarioState => ({
   cargando: state.horario.cargando,
   matricula: state.horario.matricula,
   festivos: state.horario.festivos,
+  edificios: state.horario.edificios,
   eventos: state.horario.eventos
 });
 
@@ -50,6 +60,7 @@ const mapDispatch = {
   cambiarCargando: cambiarCargando,
   fijarMatricula: fijarMatricula,
   fijarFestivos: fijarFestivos,
+  fijarRecursos: fijarRecursos,
   nuevoEvento: nuevoEvento
 };
 

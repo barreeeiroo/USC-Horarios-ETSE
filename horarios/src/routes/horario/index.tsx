@@ -2,7 +2,14 @@ import React from "react";
 import {HorarioProps, HorarioState} from "routes/horario/types";
 import {horarioReducer, initialState} from "routes/horario/reducers";
 import {withRouter} from "react-router-dom";
-import {cambiarCargando, CONNECTOR, fijarFestivos, fijarMatricula, nuevoEvento} from "routes/horario/actions";
+import {
+  cambiarCargando,
+  CONNECTOR,
+  fijarFestivos,
+  fijarMatricula,
+  fijarRecursos,
+  nuevoEvento
+} from "routes/horario/actions";
 import AppRoutes from "routes/index";
 import {generarAsignaturas, guardarMatricula} from "utils/share";
 import {Col, Layout, Row, Spin} from "antd";
@@ -12,7 +19,9 @@ import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import rrulePlugin from '@fullcalendar/rrule';
-import {parsearFestivos} from "utils/spreadsheet-json";
+import adaptivePlugin from '@fullcalendar/adaptive';
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import {parsearAulas, parsearFestivos} from "utils/spreadsheet-json";
 import {request} from "utils/http";
 import {BD, HORAS_LABORABLES} from "config";
 import {diasSemana} from "models/enums";
@@ -22,6 +31,7 @@ import moment from "moment";
 import "./horario.less";
 import {COLOR_EXAMEN, colores} from "utils/colors";
 import RRule from "rrule";
+import {Edificio} from "models/aula";
 
 class Horario extends React.Component<HorarioProps, HorarioState> {
   constructor(props: HorarioProps) {
@@ -51,12 +61,28 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
       // Descargar todos los festivos globales
       request(BD.FESTIVOS, `SELECT * WHERE ${BD.FESTIVOS__ASIGNATURA}='-'`).then(json => {
         state = horarioReducer(state, fijarFestivos(parsearFestivos(json)));
-        this.generarEventos(state.matricula, state.festivos)
-          .forEach(e => state = horarioReducer(state, nuevoEvento(e)));
-        state = horarioReducer(state, cambiarCargando());
-        this.setState(state, () => guardarMatricula(state.matricula));
+        // Descargar las aulas
+        request(BD.AULAS).then(json => {
+          state = horarioReducer(state, fijarRecursos(parsearAulas(json)));
+          this.generarEventos(state.matricula, state.festivos)
+            .forEach(e => state = horarioReducer(state, nuevoEvento(e)));
+          state = horarioReducer(state, cambiarCargando());
+          this.setState(state, () => guardarMatricula(state.matricula));
+        })
       });
     });
+  }
+
+  private parsearRecursos(edificios: Edificio[]) {
+    const out: any[] = [];
+    edificios.forEach((edificio, i) => edificio.aulas.forEach(aula => {
+      out.push({
+        id: aula.nombre.toLowerCase(),
+        building: edificio.nombre,
+        title: aula.nombre
+      });
+    }));
+    return out;
   }
 
   private generarEventos(asignaturas: Asignatura[], festivos: Festivo[]): EventInput[] {
@@ -115,6 +141,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
               // ],
               exrule: [...rruleFestivos, ...rrruleFestivosClase],
               color: color[clase.tipo],
+              resourceId: clase.aula?.toLowerCase(),
               extendedProps: {
                 asignatura: asignatura,
                 clase: clase,
@@ -164,13 +191,19 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
           <Col span={24}>
             <Spin tip="Cargando..." spinning={this.state.cargando} className={'fc'}>
               <FullCalendar
+                schedulerLicenseKey={'CC-Attribution-NonCommercial-NoDerivatives'}
                 viewClassNames={'fc'}
                 headerToolbar={{
                   left: 'prev,next today',
                   center: 'title',
-                  right: 'Agenda,Semana,Mes'
+                  right: 'Agenda,Semana,Mes,Aula'
                 }}
-                plugins={[dayGridPlugin, timeGridPlugin, listPlugin, rrulePlugin]}
+                plugins={[
+                  dayGridPlugin, timeGridPlugin, listPlugin,
+                  rrulePlugin,
+                  resourceTimelinePlugin,
+                  adaptivePlugin
+                ]}
                 initialView={window.innerWidth <= 768 ? "Agenda" : "Semana"}
                 locale={esLocale}
                 firstDay={1}
@@ -179,12 +212,15 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                 views={{
                   Agenda: {type: 'listWeek', duration: {days: 10}},
                   Semana: {type: 'timeGridWeek', weekends: false, allDaySlot: false},
-                  Mes: {type: 'dayGridMonth'}
+                  Mes: {type: 'dayGridMonth'},
+                  Aula: {type: 'resourceTimeline'},
                 }}
                 businessHours={HORAS_LABORABLES.map(horas => {
                   return {daysOfWeek: [1, 2, 3, 4, 5], startTime: horas.inicio, endTime: horas.fin};
                 })}
                 events={this.state.eventos}
+                resources={this.parsearRecursos(this.state.edificios)}
+                resourceGroupField='building'
 
                 eventDidMount={(info) => {
                   /* let eventTooltip = document.createElement("div");

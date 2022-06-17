@@ -4,6 +4,7 @@ import {Periodo} from "models/periodo";
 import {Grupo} from "models/grupo";
 import {Festivo} from "models/festivo";
 import {Examen} from "models/examen";
+import {Edificio} from "models/aula";
 
 export const parsearAsignaturas = (json: any): Asignatura[] => {
   const rows = json.table.rows;
@@ -43,6 +44,28 @@ export const parsearClases = (json: any): Clase[] => {
       inicio: row[2].f,
       periodos: [],
       tipo: row[5].v
+    });
+  }
+
+  return out;
+};
+
+export const parsearAulas = (json: any): Edificio[] => {
+  const rows = json.table.rows;
+  const out: Edificio[] = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i].c;
+
+    let edificio = out.find(e => e.nombre.toLowerCase() === row[2].v.toLowerCase());
+    if (edificio === undefined) {
+      edificio = {nombre: row[2].v, aulas: []};
+      out.push(edificio);
+    }
+
+    edificio.aulas.push({
+      nombre: row[0].v,
+      tipo: row[1].v
     });
   }
 

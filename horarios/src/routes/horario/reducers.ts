@@ -2,6 +2,7 @@ import {
   CAMBIAR_CARGANDO,
   FIJAR_FESTIVOS,
   FIJAR_MATRICULA,
+  FIJAR_RECURSOS,
   HorarioActionTypes,
   HorarioState,
   NUEVO_EVENTO
@@ -11,6 +12,7 @@ export const initialState: HorarioState = {
   cargando: true,
   matricula: [],
   festivos: [],
+  edificios: [],
   eventos: []
 };
 
@@ -28,6 +30,10 @@ export function horarioReducer(state = initialState, action: HorarioActionTypes)
 
     case FIJAR_FESTIVOS:
       newState = {...newState, festivos: action.payload.festivos};
+      return newState;
+
+    case FIJAR_RECURSOS:
+      newState = {...newState, edificios: action.payload.edificios};
       return newState;
 
     case NUEVO_EVENTO:
