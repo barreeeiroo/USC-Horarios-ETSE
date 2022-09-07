@@ -207,7 +207,7 @@ class Horario extends React.Component<HorarioProps, HorarioState> {
                 initialView={window.innerWidth <= 768 ? "Agenda" : "Semana"}
                 locale={esLocale}
                 firstDay={1}
-                timeZone={"local"}
+                timeZone={"Europe/Madrid"}
                 nowIndicator={true}
                 views={{
                   Agenda: {type: 'listWeek', duration: {days: 10}},
